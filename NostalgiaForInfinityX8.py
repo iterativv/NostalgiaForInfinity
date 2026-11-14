@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.250"
+    return "v18.0.251"
 
   stoploss = -0.99
 
@@ -730,7 +730,7 @@ class NostalgiaForInfinityX8(IStrategy):
   system_name_use = system_v4_name
 
   system_v4_max_stake = 1.0  # ratio of first entry
-  system_v4_stake_multiplier = 1.0
+  system_v4_stake_multiplier = 0.75
   system_v4_grind_only_after_derisk_enable = False  # Require a filled de-risk level 1, 2 or 3 before grind entries.
   system_v4_grind_entry_before_derisk_enable = True
   system_v4_grind_entry_before_derisk_max_stake = 1.0  # ratio of first entry
