@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.247"
+    return "v18.0.248"
 
   stoploss = -0.99
 
@@ -745,7 +745,7 @@ class NostalgiaForInfinityX8(IStrategy):
   bad_trade_controller_structure_break_ema_gap_pct = 35.0
   bad_trade_controller_structure_break_min_adverse_move_pct = 25.0
   bad_trade_controller_stale_exit_enable = True
-  bad_trade_controller_stale_min_age_days = 14.0
+  bad_trade_controller_stale_min_age_days = 100.0
   bad_trade_controller_stale_max_daily_range_pct = 7.0
   bad_trade_controller_stale_min_adverse_move_pct = 10.0
   # De-risk hold. A position that reaches a de-risk level while its own daily trend is still intact
