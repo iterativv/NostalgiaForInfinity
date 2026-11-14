@@ -202,6 +202,8 @@ Additional exit conditions include:
 - **Derisk exits**: Activated when the overall trade reaches a de-risk condition
 - **Partial exits**: Executed when there are remaining unfilled amounts from previous exit orders
 
+In the v4 long and short position-adjustment handlers, managed partial exits include the `partial_exit` tag. The latest filled exit's actual unfilled quantity is retried, capped to the current position and retaining the complete original tag. The retry must exceed the exchange minimum at the current exit price and either close the position or leave at least 1.55 times that minimum. If either check fails, the remainder is neither clipped nor enlarged: normal de-risk, grind and profit-peak processing continues. An executable retry takes priority, and an open order prevents duplicate orders. This recovery does not impose an elapsed-time condition or change order timeouts.
+
 The system also implements a cooldown period between entries and exits to prevent rapid-fire trading during volatile market conditions. This helps reduce transaction costs and prevents over-trading.
 
 ```mermaid
