@@ -241,6 +241,8 @@
       // MEXC ST warning 2026-11-10/11, spot delisting 11-13 (CPH 11-17, BEAM date not yet announced).
       // BEAM here is MEXC's own BEAM (old Beam privacy coin), not the Beam gaming token: mexc file only.
       "(DARK|MUSEBOOK|BCAT|CPH|CROSS|BEAM)/.*",
+      // MEXC ST warning 2026-11-11 (delisting date not yet announced)
+      "(ARRR|XEL|STONKS|KAG)/.*",
       // Tokenized stocks (STOCK suffix — universal forward-protection)
       ".*STOCK/.*",
       // Tokenized stocks (direct ticker, no STOCK suffix)

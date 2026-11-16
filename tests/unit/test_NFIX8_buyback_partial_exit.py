@@ -152,16 +152,23 @@ def test_active_buyback_derisk_finishes_its_remaining_quantity(buyback_case, sta
   bot.execute_entry.assert_not_called()
 
 
+@pytest.mark.parametrize("enabled", [False, True], ids=["admissions-off", "admissions-on"])
 @pytest.mark.parametrize("filled,rate", [(1.0, 112.0), (9.99, 150.0)], ids=["reserve", "below-minimum"])
-def test_untradeable_buyback_remainder_does_not_open_another_buyback(buyback_case, filled, rate):
+def test_untradeable_buyback_remainder_keeps_normal_admission_gates(buyback_case, filled, rate, enabled):
   bot, trade, settle, clock = buyback_case
+  bot.strategy.system_v4_buyback_1_enable = enabled
   settle(trade.orders[-1], filled, "canceled")
   clock.return_value += timedelta(minutes=5)
   bot.exchange.get_rates.return_value = (rate, rate)
 
   bot.check_and_call_adjust_trade_position(trade)
 
-  bot.execute_entry.assert_not_called()
+  if enabled:
+    bot.execute_entry.assert_called_once()
+    assert bot.execute_entry.call_args.args[1] == 1500.0 / trade.leverage
+    assert bot.execute_entry.call_args.kwargs["enter_tag"] == "buyback_1_entry"
+  else:
+    bot.execute_entry.assert_not_called()
   bot.exchange.create_order.assert_not_called()
 
 
@@ -194,7 +201,7 @@ def test_open_buyback_exit_is_not_duplicated(buyback_case):
   bot.exchange.create_order.assert_not_called()
 
 
-def test_buyback_dust_preserves_existing_emergency(rescue_case):
+def test_buyback_dust_falls_through_to_emergency_or_normal_buyback(rescue_case):
   strategy, trade = rescue_case
   strategy.derisk_enable = strategy.system_v4_derisk_level_3_enable = True
   strategy.system_v4_derisk_level_4_enable = True
@@ -243,4 +250,4 @@ def test_buyback_dust_preserves_existing_emergency(rescue_case):
   if strategy.is_futures_mode:
     assert result == (pytest.approx(-(5.01 - 7.75 / 72.0) * 100.0 / trade.leverage), "derisk_level_3")
   else:
-    assert result is None
+    assert result == (pytest.approx(1000.0), "buyback_1_entry")
