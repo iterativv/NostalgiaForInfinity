@@ -65,6 +65,104 @@ Key configuration elements include:
 
 The system also supports different grinding modes, including regular grinding, derisk grinding, and specialized modes for rebuy and rapid trading scenarios. Each mode has its own set of parameters controlling stake sizes, entry thresholds, and profit targets.
 
+### Default V4 long queues 4 and 9
+
+The default V4 long callback splits the original queue-4 ladder into two independently managed queues in both spot and futures. Queue 4 admits at most two active entries. Queue 9 uses the original third and fourth stakes after the existing queue-4 minimum-stake scaling. The default stake ratios are therefore `0.05, 0.06` for queue 4 and `0.07, 0.08` for queue 9, subject to the existing leverage conversion and minimum uplift. A shorter custom ladder supplies only its actual remaining steps; it does not create replacement allocations.
+
+A new `grind_9_entry` requires exactly two currently open, filled queue-4 entries and a positive quantity-weighted queue-4 entry price. The current entry quote must be at or below that average multiplied by `1 - system_v4_grind_9_primary_gap`. The default gap is `0.10`, a 10% raw price move independent of leveraged profit. This is a level check on each callback, with no remembered crossing. Lifetime fills, unfilled orders and old queue-4 clusters do not qualify; existing clusters with three to five queue-4 entries retain their accounting and exits but admit neither another queue-4 entry nor a new queue-9 entry.
+
+Queue 9 has at most two entries, limited further by the original ladder's remaining length. It keeps its own average, spacing, profit high-water marks, exit tags and de-risk accounting, while inheriting queue 4's profit and de-risk settings. Its first entry retains the native empty-queue spacing bypass and uses the weighted-parent price gate, without an additional spacing test against the newest queue-4 fill. Its second entry uses the original fourth-step threshold at index `3`, measured from its own first queue-9 fill. Its profit exit and de-risk remain available after queue 4 closes. Filled order tags reconstruct both queues after a database reload, and canceled partial reductions use the existing retry-first protocol.
+
+Queue 9 is evaluated after all existing queue-1 through queue-5 and buyback decisions. Its inventory contributes to the shared exposure and open-grind aggregates, including the existing queue-5 rescue count guard. Existing signal, timing, retry, wallet, stake, fee and minimum-residual checks still apply. The shared queue-4 configuration lists, short callbacks and earlier system versions retain their existing ladders.
+
+A funded buyback keeps its existing priority. An unaffordable buyback still blocks a new queue-9 entry, but it does not suppress the profit exit or de-risk of queue-9 inventory already open.
+
+The queue-9 configuration parameter is long-V4-only and is accepted without advanced mode:
+
+```json
+{
+  "nfi_parameters": {
+    "system_v4_grind_9_primary_gap": 0.10
+  }
+}
+```
+
+Change note: long V4 now enables this two-plus-two split by default; no separate opt-in or queue-9 stake configuration is required.
+
+### Default V4 long queues 1 and 6
+
+Long V4 also splits the original queue-1 ladder in both spot and futures. Queue 1 admits at most two current filled entries, or fewer when its configured ladder is shorter. Queue 6 takes only the original third and fourth stakes and thresholds, using `[2:4]` after the existing queue-1 minimum-stake scaling. The shipped stake ratios remain `0.20, 0.20` for each half; the shared configuration lists are not shortened. Old queue-1 clusters containing three to five entries still receive their full native accounting, profit exits and de-risk, but do not unlock a new queue-6 entry.
+
+Queue-6 admission requires exactly two currently open filled queue-1 entries and a positive quantity-weighted parent average. The current **entry quote** must be at or below that average times `1 - system_v4_grind_6_primary_gap`. The default `0.10` gap is inclusive and uses raw price, not leveraged profit or the most recent parent's price. No cycle or crossing state is stored. The first lower entry keeps the native empty-queue spacing bypass; its second uses the original index-3 threshold, `-0.21` by default, against its own latest fill.
+
+Queue 6 has separate quantity, cost, average, count, high-water data and `grind_6_entry`, `grind_6_exit` and `grind_6_derisk` tags. It inherits queue 1's normal entry signal, pre-de-risk controls, profit threshold and de-risk settings; it does not use queue 4's fallback signal. Existing queue-6 profit exits and de-risk remain reachable after the parent closes or is disabled, including after a database reload. The native parent de-risk retains priority: with default settings, it can close queue 1 before a descending market reaches queue 6's second-entry spacing. The split does not weaken that reduction to guarantee four consecutive buys.
+
+All original queue-1 through queue-5 and buyback decisions, followed by the complete accepted queue-9 handling, precede queue 6. A funded buyback still wins; an unfunded buyback blocks new queue-6 admission without hiding existing queue-6 reductions. Queue 6 participates in shared exposure, profit and open-entry accounting and the native global-de-risk order boundary. Its canceled partial reductions retain the existing retry-first, current-value minimum, 1.55-times residual reserve and spot base-fee rules. Only long-V4 queue-6 exit/de-risk fills reset its own high-water marks.
+
+The gap is accepted in either top-level configuration or `nfi_parameters` without advanced mode:
+
+```json
+{
+  "nfi_parameters": {
+    "system_v4_grind_6_primary_gap": 0.10
+  }
+}
+```
+
+Change note: this long-V4-only split is active by default, without a separate queue-6 ladder, reserve or signal. The legacy grind-mode `gd6` namespace, short ladders and earlier system versions are unchanged.
+
+### Default V4 long queues 2 and 7
+
+The same two-plus-two split also applies to queue 2 in long V4 spot and futures: parent queue 2 admits at most two current filled entries, and lower queue 7 receives only the original already-minimum-scaled stakes `[2:4]` and corresponding thresholds. The default stake ratios are `0.10, 0.12` for queue 2 and `0.14, 0.16` for queue 7. Shorter custom ladders supply only the actual remaining entries; old three-to-five-entry parent clusters remain fully managed but do not unlock queue 7.
+
+Queue 7 requires exactly two currently open filled queue-2 entries with a positive quantity-weighted average. Its inclusive entry-quote gate uses `parent_average * (1 - system_v4_grind_7_primary_gap)`, with a safe, long-V4-only default gap of `0.10`. The first lower entry uses the native empty-queue spacing bypass; the second uses original index `3`, `-0.09` by default, measured from its own first fill. It inherits queue 2's profit threshold (`0.035` by default), de-risk threshold/use flag and normal signal/pre-de-risk controls, without a queue-4 fallback.
+
+Queue 7 independently reconstructs its amount, cost, average, count, spacing, high-water data and `grind_7_entry` / `grind_7_exit` / `grind_7_derisk` tags after reload. Parent closure or admission disablement does not remove management of existing lower inventory. The established partial-reduction retry, minimum/reserve and spot base-fee rules apply, and its inventory participates in shared profit, exposure and rescue-count accounting. Its filled exit/de-risk resets are restricted to its own stored long-V4 cluster.
+
+Decision priority is original queues 1–5 and buyback, then the **complete** queue-9 handling, then queue 6, then queue 7, followed by queues 8 and 10. A funded buyback still wins; an unfunded buyback blocks new lower admission without suppressing existing lower reductions. Accepted queue 4/9, all short ladders, earlier systems and legacy `gd6` retain their existing behavior.
+
+The gap can be configured at the top level or without advanced mode under `nfi_parameters`:
+
+```json
+{
+  "nfi_parameters": {
+    "system_v4_grind_7_primary_gap": 0.10
+  }
+}
+```
+
+Change note: queue 2/7 is enabled by its existing parent controls, with no additional ladder, signal or reserve.
+
+### Default V4 long queues 3/8 and 5/10: all five splits
+
+Long V4 spot and futures now split every original parent: **1/6, 2/7, 3/8, 4/9 and 5/10**. Each parent cap is `min(2, len(original_scaled_stakes))`; each lower receives only the actual original stakes and thresholds `[2:4]`, after the parent's native minimum scaling. Empty ladders admit nothing, short ladders create no replacement capital, and historical overfull parents remain fully managed without admitting new parent or lower entries. Configuration lists remain intact for short and earlier-system callbacks.
+
+Queue 3's default ratios are `0.10, 0.12` for the parent and `0.14, 0.16` for queue 8. Queue 5's are `0.05, 0.06` for the parent and `0.07, 0.08` for queue 10. Both new lowers require **exactly two current filled parents**, a positive quantity-weighted parent average, and an inclusive **current entry quote** comparison against `parent_average * (1 - primary_gap)`. The default gap is a raw 10%, independent of leverage, not a PnL threshold or a remembered crossing. The first lower entry keeps the empty-queue spacing bypass; the second uses original index `3` (`-0.09` by default) against its own latest fill.
+
+Queues 8 and 10 have separate reconstructed amount, cost, count, average, spacing, high-water marks, entry/exit/de-risk tags and canceled-partial retry routing. They inherit their own parent's profit and de-risk settings, including pre-de-risk admission, and remain manageable after the parent closes or admission is disabled and after database reload. Only their own stored long-V4 exit/de-risk fills reset their two high-water marks. Current-value minimums, leverage conversion, fee-net spot settlement, retry-first handling and the native 1.55-times minimum residual reserve still apply. Parent de-risk retains priority and can preempt a second lower fill; four consecutive buys are not guaranteed by the defaults.
+
+Queue 5 keeps its native admission order: prior-de-risk fallback (`g5_fb1`, loss strictly beyond 6% plus its original indicators), original liquidation route (`g5_liq1`, loss strictly beyond 15% plus the native liquidation expression), ordinary signal, small-margin rescue (`g5_liq2`), then pre-de-risk. These loss guards use the raw change from the **latest filled entry** to `exit_rate` (`slice_profit_entry`), not the initial main entry or the weighted parent average. Rescue only admits the **next original parent step**; it adds no separate allocation. Its amount is always the scaled native ladder step divided by leverage, floored at `1.5 * minimum` and admitted only when no greater than `max_stake`.
+
+The small-margin rescue retains its futures-only, positive/noncrossed liquidation, strict `< 1.20 * liquidation` and configurable strict loss threshold (default 5%) guards. It also requires **at most one open entry across all grinds, buybacks and rebuy**, including 8/10, and total trade cost-basis stake plus the minimum-uplifted next original step no greater than `0.50 * original_slice / leverage`. Two current parent-5 entries already make that shared count at least two: **rescue alone does not unlock queue 10**. No parents are excluded from that count and no rescue budget, gap or emergency guard is widened.
+
+Queue 10 inherits the applicable queue-5 fallback, original liquidation, ordinary and pre-de-risk routes, with `g10_fb1`, `g10_liq1`, `g10` and `g10_pre_derisk` diagnostics. It does not borrow queue 4/9's different fallback, or index a hypothetical parent-5 rescue step. The small-margin rescue route is omitted for queue 10 because its required two parents make that route inapplicable. The original `g5_liq1` expression is preserved as written; the stronger positive/noncrossed checks belong to `g5_liq2`, not an unrelated correction to `g5_liq1`.
+
+Retry and emergency/ordinary de-risk levels 1–4 remain first, then original queues 1–5 and buyback/rebuy, then complete queue handling in **9, 6, 7, 8, 10** order. This includes each earlier queue's reductions before a later queue's entries. New 8/10 inventory participates in all shared open-count/profit/exposure accounting. A funded buyback wins; an unaffordable buyback blocks new lower entries without hiding existing lower reductions. Parent 4's reentry remains unchanged.
+
+Both new gap parameters are accepted at the top level or under `nfi_parameters`, without advanced mode:
+
+```json
+{
+  "nfi_parameters": {
+    "system_v4_grind_8_primary_gap": 0.10,
+    "system_v4_grind_10_primary_gap": 0.10
+  }
+}
+```
+
+Change note: 3/8 and 5/10 complete the default long-V4 two-plus-two source implementation. The parent caps, delayed lower admission and larger shared open-count membership intentionally change rescue admission and portfolio trajectories; they are not rescue parity, market parity or a market-benefit claim. No separate reserve, new signal, retagging, parent promotion, cycle state or gap tuning is introduced. The older queue-5 description below belongs to the earlier grinding system, not this V4 contract.
+
+
 ```mermaid
 classDiagram
 class NostalgiaForInfinityX8 {

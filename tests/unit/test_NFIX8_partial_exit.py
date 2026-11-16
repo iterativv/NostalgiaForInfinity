@@ -120,6 +120,16 @@ def test_partial_exit_retries_eligible_remainder(partial_exit_case, tag):
   assert result == (-300.0 / trade.leverage, tag)
 
 
+@pytest.mark.parametrize("level", [6, 7, 8, 10])
+@pytest.mark.parametrize("kind", ["exit", "derisk"])
+def test_lower_partial_retry_is_long_v4_only(partial_exit_case, level, kind):
+  strategy, trade = partial_exit_case
+  tag = f"grind_{level}_{kind} 2"
+  add_order(trade, trade.exit_side, tag, 4.0, 1.0, "canceled")
+  result = run_adjust(strategy, trade)
+  assert result == (None if trade.is_short else (-300.0 / trade.leverage, tag))
+
+
 @pytest.mark.parametrize(
   "tag",
   [
@@ -130,8 +140,8 @@ def test_partial_exit_retries_eligible_remainder(partial_exit_case, tag):
     "force_exit",
     "buyback_1_exit 2",
     "rebuy_exit 2",
-    "grind_6_exit 2",
     "grind_1_exit_other 2",
+    "grind_11_exit 2",
   ],
 )
 def test_partial_exit_does_not_recover_normal_or_unrelated_exits(partial_exit_case, tag):

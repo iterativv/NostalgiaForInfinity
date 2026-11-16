@@ -96,7 +96,11 @@ def test_multiple_fills_use_weighted_queue_average(grind_case, level, distance):
   average = 110.0 if trade.is_short else 90.0
   rate = average * (1.22 - distance if trade.is_short else 0.78 + distance)
   result = adjust(grind_case, rate)
-  assert result is not None and result[0] > 0 and result[1] == f"grind_{level}_entry"
+  if not trade.is_short:
+    # All five long-V4 parents now cap at two; short parents retain their complete native ladders.
+    assert result is None
+  else:
+    assert result is not None and result[0] > 0 and result[1] == f"grind_{level}_entry"
 
 
 @pytest.mark.parametrize("level", range(1, 6))

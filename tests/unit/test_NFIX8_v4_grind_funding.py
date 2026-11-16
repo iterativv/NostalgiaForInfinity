@@ -250,7 +250,7 @@ def test_pre_derisk_entry_preserves_funding_and_later_reduction(v4_case, level, 
     assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_2_derisk {trade.orders[-1].id}")
 
 
-@pytest.mark.parametrize("level", [1])
+@pytest.mark.parametrize("level", [1, 2])
 @pytest.mark.parametrize("entry_signal,funded", [(False, False), (True, False), (True, True)])
 def test_unfunded_add_does_not_hide_profitable_grind_exit(v4_case, level, entry_signal, funded):
   strategy, trade, _ = v4_case
@@ -258,7 +258,7 @@ def test_unfunded_add_does_not_hide_profitable_grind_exit(v4_case, level, entry_
   strategy.dp.send_msg = MagicMock()
   strategy.long_grind_entry_v4 = MagicMock(return_value=entry_signal)
   strategy.short_grind_entry_v4 = MagicMock(return_value=entry_signal)
-  fill(trade, trade.entry_side, 1.0, 50.0 if trade.is_short else 200.0, "grind_1_entry")
+  fill(trade, trade.entry_side, 1.0, 50.0 if trade.is_short else 200.0, f"grind_{level}_entry")
   rate = 70.0 if trade.is_short else 160.0
   frame, _ = strategy.dp.get_analyzed_dataframe(trade.pair, "5m")
   frame = frame.assign(
@@ -274,8 +274,11 @@ def test_unfunded_add_does_not_hide_profitable_grind_exit(v4_case, level, entry_
 
   result = adjust((strategy, trade, rate), proposal if funded else 0.0)
 
-  if entry_signal and funded:
-    assert result == (pytest.approx(proposal), "grind_1_entry")
+  if entry_signal and funded and trade.is_short:
+    assert result == (pytest.approx(proposal), f"grind_{level}_entry")
   else:
     quantity_stake = (187.5 if trade.is_short else 225.0) / trade.leverage
-    assert result == (pytest.approx(-quantity_stake), "grind_1_exit 4 3")
+    assert result == (pytest.approx(-quantity_stake), f"grind_{level}_exit 4 3")
+    fill(trade, trade.exit_side, 2.0, rate, result[1])
+    strategy.order_filled(trade.pair, trade, trade.orders[-1], NOW)
+    assert trade.amount == pytest.approx(6.0)
