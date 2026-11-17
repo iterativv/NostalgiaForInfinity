@@ -179,6 +179,12 @@
       // bitget and htx (no perp anywhere), ~$20k/day on bybit, -81.6% off its 2026-05-08 high and
       // -42% over thirty days, with a 46% daily range on 2026-11-08
       "(A8)/.*",
+      // Protocol exploit, continuing sell pressure (iterativ, 2026-11-17) — Kava Lend was drained
+      // on 2026-11-14 (~55.2M KAVA borrowed, ~$3.8M, mostly sold on BNB Chain); KAVA closed -59.0%
+      // that day on a 174.8% range and is -61.3% over seven days. Korean venues halted transfers.
+      // The exploit day left the 3-day RangeStabilityFilter window on 11-17 (RoC 1.75 -> 0.51), so
+      // the pair is selectable again. Perp on binance (~$56M/day), bybit and bitget; spot on binance.
+      "(KAVA)/.*",
       // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24),
       // JCT -82.4% off its 2026-06-13 peak, single-day ranges of 96%, 96% and 83% (2026-09-10)
       "(APR|JCT|VELVET)/.*",
