@@ -267,6 +267,45 @@ K --> L[Resume Monitoring]
 **Section sources**
 - [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
+### Original long V4 queues: one eligible entry per de-risk
+
+For stored long V4 trades, each original queue (`grind_1` through `grind_5`) reconstructs its remaining
+filled entries by native order ID in the existing shared reverse-order pass. A selected entry's actual
+filled exit quantity reduces only that entry's remaining net inventory. Other entries stay available
+for native additions and profit management; a single selected exit does not close the whole queue.
+Once a lot is fully consumed, its native sub-grind slot is available again. A later addition uses the
+existing stake/spacing index and the newest remaining lot; a partially consumed orderable lot retains
+its slot.
+
+De-risk selection follows first-opened priority by walking the existing newest-first list from its end.
+It selects the first entry that qualifies on its own configured raw-price threshold, rather than sorting
+by highest fill price or letting an unqualified older entry block other eligible entries.
+The comparison uses `(exit_rate - entry.safe_price) / entry.safe_price`, with the unchanged default
+strictly below -22% for both spot and futures, not leveraged PnL or the
+queue's average return. Each adjustment creates at most one executable selected-entry reduction.
+Entry spacing, stake allocations, configured thresholds and native entry/queue priority are unchanged.
+
+The selected-entry tag is `grind_N_derisk_entry ENTRY_ID`. Actual partial fills, retries and reloads
+retain the referenced entry's net remainder; open orders prevent duplicate adjustments. Stored native
+amount/contract precision handles unorderable post-fill residue without combining or enlarging lots
+to meet the minimum. Native minimum, reserve, fee, leverage and shared funding guards still apply.
+The strict minimum is checked on the native precision-rounded quantity at the current exit price,
+including after reserve clipping. A rounded-below-minimum lot is skipped, not enlarged.
+Selected reductions, their retries and remaining-inventory profit exits encode that bounded quantity
+through the native entry-basis callback and verify the exact native precision round trip. Only float
+representations are normalized; no quantity epsilon or extra lot is added. An unrepresentable quantity
+leaves other native exit processing reachable.
+Sold quantities and remaining-net totals use native precise arithmetic, so partial fills such as
+`0.6 - 0.4` retain the executable `0.2` rather than losing a precision step through binary subtraction.
+A selected fill resets only its own queue's existing profit highwaters.
+
+Ordinary profit exits retain their native queue profit condition and close all of the remaining queue
+inventory together, excluding quantities already de-risked. Historical native whole-queue and global
+exit tags keep their existing cohort boundaries. Persisted `grind_1_derisk_top ENTRY_ID` fills remain
+readable as selected-entry history; they do not impose highest-price priority on new selections.
+Short trades, older stored systems and other position-management modes retain their native behavior.
+This execution contract does not establish a portfolio benefit or authorize live use or tuning.
+
 ## Configuration Parameters
 The grinding mechanism is controlled by numerous configuration parameters that allow users to customize its behavior based on their risk tolerance and market conditions. These parameters are divided into several categories:
 

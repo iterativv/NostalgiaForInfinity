@@ -1,6 +1,7 @@
 """V4 spot reductions must not sell entry fees out of the initial position."""
 
 from datetime import datetime
+from itertools import count
 from unittest.mock import MagicMock
 
 import pytest
@@ -46,8 +47,9 @@ def quantity_bot(v4_case, mocker):
     fee["currency"],
     fee["rate"],
   )
+  order_ids = count()
   bot.exchange.create_order.side_effect = lambda **kw: {
-    "id": f"reduction-{len(trade.orders)}",
+    "id": f"reduction-{next(order_ids)}",
     "symbol": trade.pair,
     "type": "limit",
     "side": kw["side"],
@@ -110,7 +112,8 @@ def test_grind_reduction_preserves_initial_inventory(quantity_bot, v4_case, leve
   quantity_bot.execute_entry.assert_not_called()
   quantity_bot.exchange.create_order.assert_called_once()
   order = trade.orders[-1]
-  assert order.ft_order_tag.startswith(f"grind_{level}_{reason} ")
+  kind = "derisk_entry" if reason == "derisk" else reason
+  assert order.ft_order_tag.startswith(f"grind_{level}_{kind} ")
   assert order.amount == pytest.approx(1.0 - fee, abs=1e-8)
   order.status = "closed"
   order.ft_is_open = False
@@ -146,7 +149,8 @@ def test_canceled_partial_reduction_retries_only_net_remainder(quantity_bot, v4_
   retry = trade.orders[-1]
   assert retry is not first
   assert retry.ft_order_tag == first.ft_order_tag
-  assert retry.ft_order_tag.startswith(f"grind_{level}_{reason} ")
+  kind = "derisk_entry" if reason == "derisk" else reason
+  assert retry.ft_order_tag.startswith(f"grind_{level}_{kind} ")
   assert retry.amount == pytest.approx(0.599, abs=1e-8)
 
 
@@ -172,18 +176,35 @@ def test_base_fee_reduction_keeps_existing_minimum_remainder(quantity_bot, v4_ca
 @pytest.mark.parametrize("v4_case", [(False, 1.0)], indirect=True)
 def test_unequal_price_fills_keep_raw_profit_and_derisk_boundaries(quantity_bot, v4_case, level):
   strategy, trade, _ = v4_case
+  oldest = trade.orders[-1]
   settle_base_fee(quantity_bot, trade, trade.orders[-1], 0.001)
   funding.fill(trade, trade.entry_side, 1.0, 200.0, f"grind_{level}_entry")
   settle_base_fee(quantity_bot, trade, trade.orders[-1], 0.001)
-  # Gross-fill weighted price remains150, not300/1.998 after the base fee.
+  newest = trade.orders[-1]
+  # Skip the unqualified older fill; only the 200-price fill reaches its own loss threshold.
+  derisk_threshold = getattr(strategy, f"system_v4_grind_{level}_derisk_spot")
+  assert (135.01 - oldest.safe_price) / oldest.safe_price >= derisk_threshold
+  assert (135.01 - newest.safe_price) / newest.safe_price < derisk_threshold
   set_rate(quantity_bot, trade, 135.01)
   quantity_bot.check_and_call_adjust_trade_position(trade)
-  quantity_bot.exchange.create_order.assert_not_called()
+  first = trade.orders[-1]
+  assert first.ft_order_tag == f"grind_{level}_derisk_entry {newest.id}"
+  assert first.amount == pytest.approx(0.999, abs=1e-8)
+  first.status = "closed"
+  first.ft_is_open = False
+  first.filled = first.amount
+  first.remaining = 0.0
+  first.average = 135.01
+  first.cost = first.filled * first.average
+  first.order_filled_date = NOW
+  trade.update_trade(first)
+  assert trade.amount == pytest.approx(6.999, abs=1e-8)
   threshold = getattr(strategy, f"system_v4_grind_{level}_profit_threshold_spot")
-  set_rate(quantity_bot, trade, 150.0 * (1.0 + threshold + trade.fee_open + trade.fee_close) + 0.01)
+  set_rate(quantity_bot, trade, 100.0 * (1.0 + threshold + trade.fee_open + trade.fee_close) + 0.01)
 
   quantity_bot.check_and_call_adjust_trade_position(trade)
 
   order = trade.orders[-1]
-  assert order.ft_order_tag.startswith(f"grind_{level}_exit ")
-  assert order.amount == pytest.approx(1.998, abs=1e-8)
+  assert order.ft_order_tag == f"grind_{level}_exit {oldest.id}"
+  assert order.amount == pytest.approx(0.999, abs=1e-8)
+  assert first.amount + order.amount == pytest.approx(1.998, abs=1e-8)

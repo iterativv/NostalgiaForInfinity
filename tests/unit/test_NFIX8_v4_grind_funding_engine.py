@@ -185,7 +185,12 @@ def test_engine_reaches_reduction_when_addition_cannot_execute(
     assert order_args["reduceOnly"] == (trade.leverage > 1)
     assert order_args["amount"] == pytest.approx(1.0)
     exit_level = level + 1 if mode == "buyback" else level
-    assert trade.orders[-1].ft_order_tag == f"{mode}_{exit_level}_derisk {grind_order_id}"
+    exit_kind = (
+      "derisk_entry"
+      if trade.get_custom_data("system_version") == "system_v4" and not trade.is_short and mode == "grind"
+      else "derisk"
+    )
+    assert trade.orders[-1].ft_order_tag == f"{mode}_{exit_level}_{exit_kind} {grind_order_id}"
     assert trade.orders[-1].ft_is_open
 
 

@@ -240,7 +240,8 @@ def test_unexecutable_retry_keeps_ordinary_exits_reachable(
     strategy._bad_trade_controller_derisk_hold.return_value = False
   else:
     other = rescue.add_order(trade, trade.entry_side, "grind_2_entry", 1.0)
-    expected_tag = f"{ordinary_exit} {other.id}"
+    exit_kind = "grind_2_derisk_entry" if ordinary_exit == "grind_2_derisk" and not trade.is_short else ordinary_exit
+    expected_tag = f"{exit_kind} {other.id}"
     if ordinary_exit == "grind_2_exit":
       other.price = other.average = other.ft_price = 150.0 if trade.is_short else 50.0
       other.cost = other.price

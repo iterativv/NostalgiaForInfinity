@@ -77,7 +77,8 @@ def test_open_grind_adds_before_derisk_without_normal_signal(grind_case, level, 
     assert result is not None and result[0] > 0 and result[1] == f"grind_{level}_entry"
     assert strategy._grind_entry_tag == "g_pre_derisk"
   elif action == "derisk":
-    assert result is not None and result[0] < 0 and result[1].startswith(f"grind_{level}_derisk ")
+    kind = "derisk" if trade.is_short else "derisk_entry"
+    assert result is not None and result[0] < 0 and result[1] == f"grind_{level}_{kind} {trade.orders[-1].id}"
   else:
     assert result is None
 
@@ -232,4 +233,5 @@ def test_pre_derisk_stake_cap_does_not_gate_ordinary_entry_or_derisk(grind_case)
   strategy.long_grind_entry_v4.return_value = False
   strategy.short_grind_entry_v4.return_value = False
   result = adjust(grind_case, 122.01 if trade.is_short else 77.99)
-  assert result is not None and result[0] < 0 and result[1].startswith("grind_1_derisk")
+  kind = "derisk" if trade.is_short else "derisk_entry"
+  assert result is not None and result[0] < 0 and result[1] == f"grind_1_{kind} {trade.orders[-1].id}"

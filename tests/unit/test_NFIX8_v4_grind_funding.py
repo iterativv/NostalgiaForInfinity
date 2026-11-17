@@ -112,7 +112,8 @@ def test_funded_add_keeps_priority_otherwise_existing_reduction_runs(v4_case, le
   if entry_signal and funding_ratio >= 1.0:
     assert result == (pytest.approx(proposal), f"grind_{level}_entry")
   else:
-    assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_{level}_derisk {trade.orders[-1].id}")
+    kind = "derisk" if trade.is_short else "derisk_entry"
+    assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_{level}_{kind} {trade.orders[-1].id}")
 
 
 @pytest.mark.parametrize("funded", [False, True])
@@ -189,7 +190,8 @@ def test_post_derisk_rebuy_handoff_reaches_existing_reduction(v4_case, level):
 
   result = adjust(v4_case, 0.0)
 
-  assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_{level}_derisk {trade.orders[-1].id}")
+  kind = "derisk" if trade.is_short else "derisk_entry"
+  assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_{level}_{kind} {trade.orders[-1].id}")
 
 
 @pytest.mark.parametrize("level", [5])
@@ -203,11 +205,12 @@ def test_liquidation_entry_keeps_funded_size_and_unfunded_fallthrough(v4_case, l
   rate = 125.0 if trade.is_short else 75.0
 
   result = adjust((strategy, trade, rate), 1000.0 if funded else 0.0)
+  kind = "derisk" if trade.is_short else "derisk_entry"
 
   assert result == (
     (pytest.approx(150.0 / trade.leverage), "grind_5_entry")
     if funded
-    else (pytest.approx(-100.0 / trade.leverage), f"grind_5_derisk {trade.orders[-1].id}")
+    else (pytest.approx(-100.0 / trade.leverage), f"grind_5_{kind} {trade.orders[-1].id}")
   )
 
 
@@ -247,7 +250,8 @@ def test_pre_derisk_entry_preserves_funding_and_later_reduction(v4_case, level, 
   if funded:
     assert result == (pytest.approx(proposal), "grind_1_entry")
   else:
-    assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_2_derisk {trade.orders[-1].id}")
+    kind = "derisk" if trade.is_short else "derisk_entry"
+    assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_2_{kind} {trade.orders[-1].id}")
 
 
 @pytest.mark.parametrize("level", [1])
