@@ -178,7 +178,8 @@ def test_first_derisk_exit_checks_current_order_value(profit_exit_bot, v4_case, 
   profit_exit_bot.exchange.create_order.assert_called_once()
   order = trade.orders[-1]
   assert order.ft_order_side == trade.exit_side
-  assert order.ft_order_tag == f"grind_{level}_derisk {entry.id}"
+  mode = "derisk_top" if system == "system_v4" and level == 1 and not trade.is_short else "derisk"
+  assert order.ft_order_tag == f"grind_{level}_{mode} {entry.id}"
   assert abs(Decimal(str(order.amount)) - Decimal(str(expected))) <= Decimal("0.00000001")
   order.update_from_ccxt_object(
     {

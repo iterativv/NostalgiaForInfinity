@@ -267,6 +267,32 @@ K --> L[Resume Monitoring]
 **Section sources**
 - [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L34686-L39203)
 
+### Long V4 `grind_1`: one top entry per de-risk
+
+The one-queue pilot changes only original `grind_1` on stored long V4 trades, for both spot and futures.
+Its existing de-risk condition still uses the raw price return from the quantity-weighted average of the
+remaining queue, with a default threshold below -22%; this is not leveraged PnL or an individual-entry trigger.
+The five native entry allocations, entry-before-de-risk priority and shared capital limits are unchanged.
+
+When that condition is met, one order reduces only the remaining net quantity of the entry with the highest
+actual fill price. Equal prices use the oldest actual fill timestamp, then native order ID; missing fill
+timestamps use the native persisted order-ID chronology. The initial trade entry is not a grind lot.
+The order tag is `grind_1_derisk_top ENTRY_ID`.
+
+Filled targeted exits are replayed against that entry ID, so partial fills and reloads retain the other open
+lots and the selected lot's actual remainder. Base-asset fees and native minimum/reserve checks still apply;
+small lots are not combined to reach the minimum. Open orders block another adjustment, executable partial
+retries retain priority, and unexecutable retries leave ordinary profit exits and emergency/other-queue
+management reachable. A targeted fill resets only the affected queue's existing profit highwaters.
+After a targeted fill, a remainder that truncates to zero at the trade's stored amount/contract precision
+is exhausted for queue selection, matching native quantity precision. Orderable remainders remain subject
+to the existing minimum; this does not combine lots, alter native trade balances or create an accounting ledger.
+
+Ordinary queue profit exits use the remaining net inventory. Historical whole-queue and global exit tags keep
+their existing boundaries; old tags are not reinterpreted as targeted exits. The other four original queues,
+short trades and older stored systems retain their native behavior. No new entry threshold or capital is added.
+Execution regressions do not establish a portfolio benefit; a comparison with the split approach is separate.
+
 ## Configuration Parameters
 The grinding mechanism is controlled by numerous configuration parameters that allow users to customize its behavior based on their risk tolerance and market conditions. These parameters are divided into several categories:
 

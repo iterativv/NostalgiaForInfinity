@@ -10,6 +10,7 @@ from freqtrade.strategy import merge_informative_pair
 from pandas import DataFrame, Series
 from functools import reduce
 from freqtrade.persistence import Trade, Order
+from freqtrade.exchange import amount_to_contract_precision
 from datetime import datetime, timedelta
 import time
 from typing import Optional
@@ -1705,6 +1706,54 @@ class NostalgiaForInfinityX8(IStrategy):
     return filled_orders, filled_entries, filled_exits
 
   @staticmethod
+  def _long_grind_remaining_entries_v4(trade: "Trade", filled_orders, level: int) -> list[tuple[Order, float, float]]:
+    """Replay one long grind queue into newest-first (order, gross, net) remainders."""
+    entry_tag = f"grind_{level}_entry"
+    targeted_exit_tag = f"grind_{level}_derisk_top"
+    boundary_tags = (f"grind_{level}_exit", f"grind_{level}_derisk", "derisk_global")
+    entries = []
+    entry_indexes = {}
+    for order_index, order in enumerate(filled_orders):
+      order_tag = order.ft_order_tag
+      if not isinstance(order_tag, str):
+        continue
+      if order_index > 0 and order.ft_order_side == "buy" and order_tag == entry_tag:
+        gross_amount = order.safe_filled
+        net_amount = order.safe_amount_after_fee
+        if gross_amount > 0.0 and net_amount > 0.0 and np.isfinite(gross_amount) and np.isfinite(net_amount):
+          if order.id is not None:
+            entry_indexes[str(order.id)] = len(entries)
+          entries.append((order, gross_amount, net_amount))
+      elif order.ft_order_side == "sell":
+        order_mode, _, entry_id = order_tag.partition(" ")
+        if order_mode in boundary_tags:
+          entries.clear()
+          entry_indexes.clear()
+        elif order_mode == targeted_exit_tag and entry_id.isascii() and entry_id.isdecimal():
+          entry_index = entry_indexes.get(entry_id)
+          if entry_index is None:
+            continue
+          sold_amount = order.safe_filled
+          if sold_amount <= 0.0 or not np.isfinite(sold_amount):
+            continue
+          entry_order, _, remaining_net = entries[entry_index]
+          original_net = entry_order.safe_amount_after_fee
+          remaining_net -= sold_amount
+          # Match native Trade precision after a fill, without discarding orderable lots below minimum stake.
+          if (
+            remaining_net <= np.spacing(original_net) * 8.0
+            or amount_to_contract_precision(
+              remaining_net, trade.amount_precision, trade.precision_mode, trade.contract_size
+            )
+            == 0.0
+          ):
+            entries[entry_index] = (entry_order, 0.0, 0.0)
+          else:
+            remaining_gross = entry_order.safe_filled * (remaining_net / original_net)
+            entries[entry_index] = (entry_order, remaining_gross, remaining_net)
+    return [entry for entry in reversed(entries) if entry[2] > 0.0]
+
+  @staticmethod
   def _bad_trade_controller_ema_gap_and_adverse_move(
     trade: "Trade", current_rate: float, last_candle, filled_entries: "Orders"
   ) -> tuple:
@@ -2704,6 +2753,22 @@ class NostalgiaForInfinityX8(IStrategy):
 
         trade.set_custom_data(key="grind_5_cluster_max_profit_stake", value=0.0)
         trade.set_custom_data(key="grind_5_cluster_max_profit_rate", value=0.0)
+
+    if (
+      not trade.is_short
+      and self.is_system_v4(trade)
+      and order.ft_order_side == "sell"
+      and isinstance(order.ft_order_tag, str)
+      and order.ft_order_tag.partition(" ")[0] == "grind_1_derisk_top"
+      and order.safe_filled > 0.0
+    ):
+      targeted_entry_id = order.ft_order_tag.partition(" ")[2]
+      remaining_before_fill = self._long_grind_remaining_entries_v4(
+        trade, (filled_order for filled_order in trade.select_filled_orders() if filled_order.id != order.id), 1
+      )
+      if any(str(entry.id) == targeted_entry_id for entry, _, _ in remaining_before_fill):
+        set_custom_data(key="grind_1_cluster_max_profit_stake", value=0.0)
+        set_custom_data(key="grind_1_cluster_max_profit_rate", value=0.0)
 
     if system_name_use == system_v3_2_name or system_name_use == system_v4_name:
       filled_entries = trade.select_filled_orders(trade.entry_side)
@@ -44090,6 +44155,10 @@ class NostalgiaForInfinityX8(IStrategy):
     )
     count_of_exits = trade.nr_of_successful_exits
 
+    is_system_v4 = self.is_system_v4(trade)
+    grind_1_top_derisk = is_system_v4 and not trade.is_short
+    grind_1_targeted_retry_pending = False
+
     if dp.runmode.value in ("live", "dry_run"):
       ticker = dp.ticker(trade_pair)
       if ("bid" in ticker) and ("ask" in ticker):
@@ -44107,26 +44176,43 @@ class NostalgiaForInfinityX8(IStrategy):
     partial_exit = filled_exits[-1] if filled_exits else None
     if partial_exit is not None and partial_exit.safe_remaining > 0.0:
       partial_exit_tag = partial_exit.ft_order_tag or ""
-      if partial_exit_tag.partition(" ")[0] in (
-        "derisk_level_1",
-        "derisk_level_2",
-        "derisk_level_3",
-        "derisk_level_4",
-        "derisk_global",
-        "grind_1_exit",
-        "grind_1_derisk",
-        "grind_2_exit",
-        "grind_2_derisk",
-        "grind_3_exit",
-        "grind_3_derisk",
-        "grind_4_exit",
-        "grind_4_derisk",
-        "grind_5_exit",
-        "grind_5_derisk",
-        "buyback_1_derisk",
-        "partial_exit",
+      partial_exit_mode, _, partial_entry_id = partial_exit_tag.partition(" ")
+      is_grind_1_targeted_retry = grind_1_top_derisk and partial_exit_mode == "grind_1_derisk_top"
+      if (
+        partial_exit_mode
+        in (
+          "derisk_level_1",
+          "derisk_level_2",
+          "derisk_level_3",
+          "derisk_level_4",
+          "derisk_global",
+          "grind_1_exit",
+          "grind_1_derisk",
+          "grind_2_exit",
+          "grind_2_derisk",
+          "grind_3_exit",
+          "grind_3_derisk",
+          "grind_4_exit",
+          "grind_4_derisk",
+          "grind_5_exit",
+          "grind_5_derisk",
+          "buyback_1_derisk",
+          "partial_exit",
+        )
+        or is_grind_1_targeted_retry
       ):
         partial_exit_amount = min(partial_exit.safe_remaining, trade_amount)
+        if is_grind_1_targeted_retry:
+          targeted_remaining = next(
+            (
+              net_amount
+              for entry, _, net_amount in self._long_grind_remaining_entries_v4(trade, filled_orders, 1)
+              if str(entry.id) == partial_entry_id
+            ),
+            0.0,
+          )
+          grind_1_targeted_retry_pending = targeted_remaining > 0.0
+          partial_exit_amount = min(partial_exit_amount, targeted_remaining)
         exit_amount = partial_exit_amount * exit_rate / trade_leverage
         ft_exit_amount = partial_exit_amount * trade_stake_amount / trade_amount
         remaining_stake = (trade_amount - partial_exit_amount) * exit_rate / trade_leverage
@@ -44135,7 +44221,7 @@ class NostalgiaForInfinityX8(IStrategy):
           remaining_stake == 0.0 or remaining_stake >= partial_exit_min_stake * 1.55
         ):
           return -ft_exit_amount, partial_exit_tag
-        # Do not clip or enlarge the recovery; leave other position management reachable.
+        # Do not widen recovery into another lot; leave other position management reachable.
 
     if profit_values is None:
       profit_values = self.calc_total_profit(trade, filled_entries, filled_exits, exit_rate)
@@ -44156,8 +44242,6 @@ class NostalgiaForInfinityX8(IStrategy):
     # Rebuy mode, the first entry is lower than normal slot stake
     if is_rebuy_mode:
       slice_amount /= self.system_v4_rebuy_mode_stake_multiplier
-
-    is_system_v4 = self.is_system_v4(trade)
 
     has_order_tags = hasattr(filled_orders[0], "ft_order_tag")
 
@@ -44504,6 +44588,38 @@ class NostalgiaForInfinityX8(IStrategy):
           if not rebuy_is_exit_found:
             rebuy_is_exit_found = True
             rebuy_exit_order = order
+
+    grind_1_remaining_net = None
+    grind_1_remaining_entries = (
+      self._long_grind_remaining_entries_v4(trade, filled_orders, 1) if grind_1_top_derisk else ()
+    )
+    if grind_1_top_derisk:
+      if not grind_1_remaining_entries:
+        closed_entry_ids = {str(order_id) for order_id in grind_1_buy_orders if order_id is not None}
+        for exit_order in reversed(filled_exits):
+          if exit_order is grind_1_exit_order:
+            break
+          exit_mode, _, entry_id = (exit_order.ft_order_tag or "").partition(" ")
+          if exit_mode == "grind_1_derisk_top" and entry_id in closed_entry_ids:
+            grind_1_is_exit_found = True
+            grind_1_exit_order = exit_order
+            break
+      grind_1_sub_grind_count = len(grind_1_remaining_entries)
+      grind_1_total_amount = 0.0
+      grind_1_total_cost = 0.0
+      grind_1_remaining_net = 0.0
+      grind_1_orders.clear()
+      grind_1_buy_orders.clear()
+      for entry_order, gross_amount, net_amount in grind_1_remaining_entries:
+        grind_1_total_amount += gross_amount
+        grind_1_total_cost += gross_amount * entry_order.safe_price
+        grind_1_remaining_net += net_amount
+        grind_1_orders.append(entry_order)
+        grind_1_buy_orders.append(entry_order.id)
+      grind_1_found = bool(grind_1_remaining_entries)
+      grind_1_distance_ratio = (
+        (exit_rate - grind_1_orders[0].safe_price) / grind_1_orders[0].safe_price if grind_1_found else 0.0
+      )
 
     if grind_1_sub_grind_count > 0:
       grind_1_current_open_rate = grind_1_total_cost / grind_1_total_amount
@@ -44991,28 +45107,44 @@ class NostalgiaForInfinityX8(IStrategy):
         grind_1_profit_threshold,
         grind_1_orders,
         trade,
+        grind_net_amount=grind_1_remaining_net,
       )
       if ft_exit_amount is not None and tag is not None:
         return ft_exit_amount, tag
 
     if (
       self.system_v4_grind_1_use_derisk
+      and not grind_1_targeted_retry_pending
       and (grind_1_sub_grind_count > 0)
       and (((exit_rate - grind_1_current_open_rate) / grind_1_current_open_rate) < grind_1_derisk_grinds)
     ):
-      # if (
-      #   self.system_v4_grind_1_use_derisk
-      #   and (grind_1_sub_grind_count > 0)
-      #   and (grind_1_current_grind_profit_stake < (slice_amount * grind_1_derisk_grinds))
-      #   and (grind_1_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
-      # ):
-      sell_amount = grind_1_total_amount * exit_rate / trade_leverage
-      if not is_futures_mode and any(order.safe_fee_base for order in grind_1_orders):
-        sell_amount = sum(order.safe_amount_after_fee for order in grind_1_orders) * exit_rate / trade_leverage
+      if grind_1_top_derisk:
+        top_price = max(entry.safe_price for entry, _, _ in grind_1_remaining_entries)
+        top_entries = [entry for entry in grind_1_remaining_entries if entry[0].safe_price == top_price]
+        if all(entry[0].order_filled_utc is not None for entry in top_entries):
+          selected_order, _, selected_net = min(
+            top_entries, key=lambda entry: (entry[0].order_filled_utc, entry[0].id)
+          )
+        else:
+          # Native persisted order-ID chronology is the fallback for missing fill timestamps.
+          selected_order, _, selected_net = min(top_entries, key=lambda entry: entry[0].id)
+        derisk_coin_amount = min(selected_net, trade_amount)
+        order_tag = f"grind_1_derisk_top {selected_order.id}"
+      else:
+        derisk_coin_amount = grind_1_total_amount
+        if not is_futures_mode and any(order.safe_fee_base for order in grind_1_orders):
+          derisk_coin_amount = sum(order.safe_amount_after_fee for order in grind_1_orders)
+        order_tag = "grind_1_derisk"
+        for grind_entry_id in grind_1_buy_orders:
+          order_tag += " " + str(grind_entry_id)
+      sell_amount = derisk_coin_amount * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_sell_amount = sell_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
       if sell_amount > min_stake:
+        if grind_1_top_derisk:
+          derisk_coin_amount = sell_amount * trade_leverage / exit_rate
+        derisk_mode = order_tag.partition(" ")[0]
         grind_profit = 0.0
         if grind_1_current_open_rate > 0.0:
           grind_profit = (
@@ -45024,7 +45156,7 @@ class NostalgiaForInfinityX8(IStrategy):
           send_msg(
             notification_msg(
               "grinding-derisk",
-              tag="grind_1_derisk",
+              tag=derisk_mode,
               pair=trade_pair,
               rate=exit_rate,
               stake_amount=sell_amount,
@@ -45033,15 +45165,16 @@ class NostalgiaForInfinityX8(IStrategy):
               stake_currency=stake_currency,
               grind_profit_stake=grind_1_current_grind_profit_stake,
               grind_profit_pct=grind_profit,
-              coin_amount=grind_1_total_amount,
+              coin_amount=derisk_coin_amount,
             )
           )
         log.info(
-          f"Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Coin amount: {grind_1_total_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_profit_stake:{stake_fmt}} {stake_currency})"
+          f"Grinding de-risk ({derisk_mode}) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | "
+          f"Stake amount: {sell_amount:{stake_fmt}} | Coin amount: {derisk_coin_amount:{stake_fmt}} | "
+          f"Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | "
+          f"Grind profit: {(grind_profit * 100.0):.2f}% "
+          f"({grind_1_current_grind_profit_stake:{stake_fmt}} {stake_currency})"
         )
-        order_tag = "grind_1_derisk"
-        for grind_entry_id in grind_1_buy_orders:
-          order_tag += " " + str(grind_entry_id)
         if has_order_tags:
           return -ft_sell_amount, order_tag
         else:
@@ -46565,6 +46698,7 @@ class NostalgiaForInfinityX8(IStrategy):
     grind_exit_profit_threshold: float,
     grind_open_orders,
     trade: Trade,
+    grind_net_amount: Optional[float] = None,
   ) -> tuple:
     # Already guarded.
     # if grind_profit_rate < (grind_exit_profit_threshold + fee_open_rate + fee_close_rate):
@@ -46620,12 +46754,15 @@ class NostalgiaForInfinityX8(IStrategy):
       trade_amount = trade.amount
       trade_stake_amount = trade.stake_amount
       exit_amount = grind_total_amount * exit_rate / trade_leverage
-      if not self.is_futures_mode and any(order.safe_fee_base for order in grind_open_orders):
+      if grind_net_amount is not None:
+        exit_amount = grind_net_amount * exit_rate / trade_leverage
+      elif not self.is_futures_mode and any(order.safe_fee_base for order in grind_open_orders):
         exit_amount = sum(order.safe_amount_after_fee for order in grind_open_orders) * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - exit_amount) < (min_stake * 1.55):
         exit_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
       ft_exit_amount = exit_amount * trade_leverage * (trade_stake_amount / trade_amount) / exit_rate
       if exit_amount > min_stake:
+        exit_coin_amount = grind_total_amount if grind_net_amount is None else exit_amount * trade_leverage / exit_rate
         self.dp.send_msg(
           self.notification_msg(
             "grinding-exit",
@@ -46638,11 +46775,14 @@ class NostalgiaForInfinityX8(IStrategy):
             stake_currency=stake_currency,
             grind_profit_stake=grind_profit_stake,
             grind_profit_pct=grind_profit_rate,
-            coin_amount=grind_total_amount,
+            coin_amount=exit_coin_amount,
           )
         )
         log.info(
-          f"Grinding exit ({name}) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {exit_amount:{stake_fmt}} | Coin amount: {grind_total_amount} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit_rate * 100.0):.2f}% ({grind_profit_stake:{stake_fmt}} {stake_currency})"
+          f"Grinding exit ({name}) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | "
+          f"Stake amount: {exit_amount:{stake_fmt}} | Coin amount: {exit_coin_amount} | "
+          f"Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | "
+          f"Grind profit: {(grind_profit_rate * 100.0):.2f}% ({grind_profit_stake:{stake_fmt}} {stake_currency})"
         )
         order_tag = tag
         for grind_entry in grind_open_orders:

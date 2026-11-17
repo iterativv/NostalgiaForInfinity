@@ -220,6 +220,8 @@ def test_existing_grind_exits_remain_available(grind_case, level, profitable):
   result = adjust(grind_case, rate)
 
   kind = "exit" if profitable else "derisk"
+  if kind == "derisk" and level == 1 and not trade.is_short:
+    kind = "derisk_top"
   assert result is not None and result[0] < 0 and result[1] == f"grind_{level}_{kind} {entry.id}"
 
 

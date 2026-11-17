@@ -1,6 +1,7 @@
 """V4 spot reductions must not sell entry fees out of the initial position."""
 
 from datetime import datetime
+from itertools import count
 from unittest.mock import MagicMock
 
 import pytest
@@ -46,8 +47,9 @@ def quantity_bot(v4_case, mocker):
     fee["currency"],
     fee["rate"],
   )
+  order_ids = count()
   bot.exchange.create_order.side_effect = lambda **kw: {
-    "id": f"reduction-{len(trade.orders)}",
+    "id": f"reduction-{next(order_ids)}",
     "symbol": trade.pair,
     "type": "limit",
     "side": kw["side"],
@@ -110,7 +112,8 @@ def test_grind_reduction_preserves_initial_inventory(quantity_bot, v4_case, leve
   quantity_bot.execute_entry.assert_not_called()
   quantity_bot.exchange.create_order.assert_called_once()
   order = trade.orders[-1]
-  assert order.ft_order_tag.startswith(f"grind_{level}_{reason} ")
+  mode = "derisk_top" if level == 1 and reason == "derisk" else reason
+  assert order.ft_order_tag.startswith(f"grind_{level}_{mode} ")
   assert order.amount == pytest.approx(1.0 - fee, abs=1e-8)
   order.status = "closed"
   order.ft_is_open = False
@@ -146,7 +149,8 @@ def test_canceled_partial_reduction_retries_only_net_remainder(quantity_bot, v4_
   retry = trade.orders[-1]
   assert retry is not first
   assert retry.ft_order_tag == first.ft_order_tag
-  assert retry.ft_order_tag.startswith(f"grind_{level}_{reason} ")
+  mode = "derisk_top" if level == 1 and reason == "derisk" else reason
+  assert retry.ft_order_tag.startswith(f"grind_{level}_{mode} ")
   assert retry.amount == pytest.approx(0.599, abs=1e-8)
 
 

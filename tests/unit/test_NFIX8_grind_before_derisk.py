@@ -77,7 +77,8 @@ def test_open_grind_adds_before_derisk_without_normal_signal(grind_case, level, 
     assert result is not None and result[0] > 0 and result[1] == f"grind_{level}_entry"
     assert strategy._grind_entry_tag == "g_pre_derisk"
   elif action == "derisk":
-    assert result is not None and result[0] < 0 and result[1].startswith(f"grind_{level}_derisk ")
+    mode = "derisk_top" if level == 1 and not trade.is_short else "derisk"
+    assert result is not None and result[0] < 0 and result[1].startswith(f"grind_{level}_{mode} ")
   else:
     assert result is None
 

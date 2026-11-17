@@ -112,7 +112,8 @@ def test_funded_add_keeps_priority_otherwise_existing_reduction_runs(v4_case, le
   if entry_signal and funding_ratio >= 1.0:
     assert result == (pytest.approx(proposal), f"grind_{level}_entry")
   else:
-    assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_{level}_derisk {trade.orders[-1].id}")
+    mode = "derisk_top" if level == 1 and not trade.is_short else "derisk"
+    assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_{level}_{mode} {trade.orders[-1].id}")
 
 
 @pytest.mark.parametrize("funded", [False, True])
@@ -189,7 +190,8 @@ def test_post_derisk_rebuy_handoff_reaches_existing_reduction(v4_case, level):
 
   result = adjust(v4_case, 0.0)
 
-  assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_{level}_derisk {trade.orders[-1].id}")
+  mode = "derisk_top" if level == 1 and not trade.is_short else "derisk"
+  assert result == (pytest.approx(-100.0 / trade.leverage), f"grind_{level}_{mode} {trade.orders[-1].id}")
 
 
 @pytest.mark.parametrize("level", [5])
