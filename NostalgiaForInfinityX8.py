@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.269"
+    return "v18.0.270"
 
   stoploss = -0.99
 
@@ -1128,7 +1128,7 @@ class NostalgiaForInfinityX8(IStrategy):
     "short_entry_condition_592_enable": False,
     "short_entry_condition_593_enable": False,
     # "short_entry_condition_603_enable": True,
-    "short_entry_condition_605_enable": False,
+    "short_entry_condition_605_enable": True,
     # "short_entry_condition_641_enable": True,
     # "short_entry_condition_642_enable": True,
     # "short_entry_condition_661_enable": True,
