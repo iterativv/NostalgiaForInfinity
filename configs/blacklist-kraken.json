@@ -181,6 +181,9 @@
       // Stock perps not yet listed by name (Bitget isRwa: YES), found against a user's local
       // Bitget blacklist (iterativ, 2026-11-18).
       "(MSFT|MSTR|NVDA)/.*",
+      // Korean equity perps (Binance TRADIFI KR_EQUITY, Bybit stock/ETF, Bitget isRwa: YES),
+      // requested by iterativ, 2026-11-18.
+      "(HANMI|HYUNDAI|KAKAO|KIA|KODEX200|LGELECTRONICS|NAVER|SAMSUNG|SAMSUNGEM|SKHYNIX)/.*",
       // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24),
       // JCT -82.4% off its 2026-06-13 peak, single-day ranges of 96%, 96% and 83% (2026-09-10)
       "(APR|JCT|VELVET)/.*",
