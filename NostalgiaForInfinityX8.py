@@ -1100,7 +1100,7 @@ class NostalgiaForInfinityX8(IStrategy):
     "long_entry_condition_170_enable": False,
     "long_entry_condition_171_enable": False,
     "long_entry_condition_172_enable": False,
-    "long_entry_condition_173_enable": False,
+    "long_entry_condition_173_enable": True,
     "long_entry_condition_174_enable": False,
     "long_entry_condition_192_enable": False,
     "long_entry_condition_193_enable": False,
