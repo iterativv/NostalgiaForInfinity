@@ -179,11 +179,8 @@
       // The exploit day left the 3-day RangeStabilityFilter window on 11-17 (RoC 1.75 -> 0.51), so
       // the pair is selectable again. Perp on binance (~$56M/day), bybit and bitget; spot on binance.
       "(KAVA)/.*",
-      // Gaps found against a user's local Bitget blacklist (iterativ, 2026-11-18). W (Wormhole) is
-      // -73% off its 120-day high and -35% over thirty days; MET (Meteora) -52% off the high and
-      // -17% over thirty days; PROM had a 41% daily range in the last two weeks.
-      "(MET|PROM|W)/.*",
-      // Stock perps not yet listed by name (Bitget isRwa: YES), from the same comparison.
+      // Stock perps not yet listed by name (Bitget isRwa: YES), found against a user's local
+      // Bitget blacklist (iterativ, 2026-11-18).
       "(MSFT|MSTR|NVDA)/.*",
       // Pump-and-dump knives — APR +192% then -68% (2026-08-12/15), VELVET -46% in an hour (2026-07-24),
       // JCT -82.4% off its 2026-06-13 peak, single-day ranges of 96%, 96% and 83% (2026-09-10)
