@@ -1,4 +1,4 @@
-"""Original V4 long queues de-risk one native entry without rewriting their fills."""
+"""Opt-in oldest V4 long de-risk retires one native entry without rewriting its fills."""
 
 import logging
 from datetime import datetime, timedelta
@@ -35,8 +35,17 @@ def no_callback_errors(caplog):
 
 
 @pytest.fixture
-def entry_derisk_bot(quantity_bot, v4_case, level, mocker):
+def derisk_config():
+  return {"nfi_advanced_mode": True, "nfi_parameters": {"system_v4_grind_derisk_mode": "oldest"}}
+
+
+@pytest.fixture
+def entry_derisk_bot(quantity_bot, v4_case, level, mocker, tmp_path, derisk_config):
   strategy, trade, _ = v4_case
+  # Existing one-entry regressions explicitly opt in through the real loader.
+  # The mode owner replaces derisk_config with an empty default, not this opt-in.
+  strategy.config.update(user_data_dir=tmp_path, **derisk_config)
+  strategy.__init__(strategy.config)
   strategy.hold_support_enabled = strategy.exit_profit_only = False
   # Only admission decisions and exchange/RPC I/O are modeled; adjustment,
   # confirmation, persistence, fees and wallet accounting remain native.
@@ -110,7 +119,7 @@ def assert_holdings(bot, trade, expected):
   if trade.trading_mode == TradingMode.FUTURES:
     assert_coins(bot.wallets.get_all_positions()[trade.pair].position, expected)
   else:
-    assert_coins(bot.wallets.get_free("ETH"), expected)
+    assert_coins(bot.wallets.get_total("ETH"), expected)
 
 
 def request_exit(bot, trade, amount, tag):

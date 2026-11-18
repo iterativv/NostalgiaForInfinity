@@ -735,6 +735,7 @@ class NostalgiaForInfinityX8(IStrategy):
   system_v4_grind_entry_before_derisk_enable = True
   system_v4_grind_entry_before_derisk_max_stake = 1.0  # ratio of first entry
   system_v4_grind_entry_before_derisk_distance = 0.02  # unleveraged price move from the grind average
+  system_v4_grind_derisk_mode = "all"
 
   # Bad-trade exits. Enable for new v4 trades without changing older open trades.
   system_v4_bad_trade_exit_enable = True
@@ -1279,6 +1280,13 @@ class NostalgiaForInfinityX8(IStrategy):
     for nfi_param in NFI_SAFE_PARAMETERS:
       if (nfi_param in strategy_config) and hasattr(self, nfi_param):
         setattr(self, nfi_param, strategy_config[nfi_param])
+
+    if not isinstance(self.system_v4_grind_derisk_mode, str) or self.system_v4_grind_derisk_mode not in (
+      "all",
+      "oldest",
+      "keep_latest",
+    ):
+      raise ValueError("system_v4_grind_derisk_mode must be all, oldest, or keep_latest.")
 
     if self.target_profit_cache is None:
       bot_name = ""
@@ -45081,10 +45089,16 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_1_current_grind_profit_stake < (slice_amount * grind_1_derisk_grinds))
       #   and (grind_1_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
-      grind_entry = grind_1_orders[-1]
-      grind_amount = grind_entry.safe_filled
-      if not is_futures_mode and grind_entry.safe_fee_base:
-        grind_amount = grind_entry.safe_amount_after_fee
+      grind_orders = grind_1_orders
+      grind_amount = grind_1_total_amount
+      if self.system_v4_grind_derisk_mode == "oldest":
+        grind_orders = grind_1_orders[-1:]
+        grind_amount = grind_orders[0].safe_filled
+      elif self.system_v4_grind_derisk_mode == "keep_latest" and len(grind_1_orders) > 1:
+        grind_orders = grind_1_orders[1:]
+        grind_amount = sum(order.safe_filled for order in grind_orders)
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_orders):
+        grind_amount = sum(order.safe_amount_after_fee for order in grind_orders)
       sell_amount = grind_amount * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
@@ -45116,7 +45130,9 @@ class NostalgiaForInfinityX8(IStrategy):
         log.info(
           f"Grinding de-risk (grind_1_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Coin amount: {grind_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_1_current_grind_profit_stake:{stake_fmt}} {stake_currency})"
         )
-        order_tag = f"grind_1_derisk {grind_entry.id}"
+        order_tag = "grind_1_derisk"
+        for grind_entry in grind_orders:
+          order_tag += " " + str(grind_entry.id)
         if has_order_tags:
           return -ft_sell_amount, order_tag
         else:
@@ -45211,10 +45227,16 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_2_current_grind_profit_stake < (slice_amount * grind_2_derisk_grinds))
       #   and (grind_2_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
-      grind_entry = grind_2_orders[-1]
-      grind_amount = grind_entry.safe_filled
-      if not is_futures_mode and grind_entry.safe_fee_base:
-        grind_amount = grind_entry.safe_amount_after_fee
+      grind_orders = grind_2_orders
+      grind_amount = grind_2_total_amount
+      if self.system_v4_grind_derisk_mode == "oldest":
+        grind_orders = grind_2_orders[-1:]
+        grind_amount = grind_orders[0].safe_filled
+      elif self.system_v4_grind_derisk_mode == "keep_latest" and len(grind_2_orders) > 1:
+        grind_orders = grind_2_orders[1:]
+        grind_amount = sum(order.safe_filled for order in grind_orders)
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_orders):
+        grind_amount = sum(order.safe_amount_after_fee for order in grind_orders)
       sell_amount = grind_amount * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
@@ -45246,7 +45268,9 @@ class NostalgiaForInfinityX8(IStrategy):
         log.info(
           f"Grinding de-risk (grind_2_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Coin amount: {grind_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_2_current_grind_profit_stake:{stake_fmt}} {stake_currency})"
         )
-        order_tag = f"grind_2_derisk {grind_entry.id}"
+        order_tag = "grind_2_derisk"
+        for grind_entry in grind_orders:
+          order_tag += " " + str(grind_entry.id)
         if has_order_tags:
           return -ft_sell_amount, order_tag
         else:
@@ -45341,10 +45365,16 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_3_current_grind_profit_stake < (slice_amount * grind_3_derisk_grinds))
       #   and (grind_3_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
-      grind_entry = grind_3_orders[-1]
-      grind_amount = grind_entry.safe_filled
-      if not is_futures_mode and grind_entry.safe_fee_base:
-        grind_amount = grind_entry.safe_amount_after_fee
+      grind_orders = grind_3_orders
+      grind_amount = grind_3_total_amount
+      if self.system_v4_grind_derisk_mode == "oldest":
+        grind_orders = grind_3_orders[-1:]
+        grind_amount = grind_orders[0].safe_filled
+      elif self.system_v4_grind_derisk_mode == "keep_latest" and len(grind_3_orders) > 1:
+        grind_orders = grind_3_orders[1:]
+        grind_amount = sum(order.safe_filled for order in grind_orders)
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_orders):
+        grind_amount = sum(order.safe_amount_after_fee for order in grind_orders)
       sell_amount = grind_amount * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
@@ -45376,7 +45406,9 @@ class NostalgiaForInfinityX8(IStrategy):
         log.info(
           f"Grinding de-risk (grind_3_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Coin amount: {grind_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_3_current_grind_profit_stake:{stake_fmt}} {stake_currency})"
         )
-        order_tag = f"grind_3_derisk {grind_entry.id}"
+        order_tag = "grind_3_derisk"
+        for grind_entry in grind_orders:
+          order_tag += " " + str(grind_entry.id)
         if has_order_tags:
           return -ft_sell_amount, order_tag
         else:
@@ -45473,10 +45505,16 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_4_current_grind_profit_stake < (slice_amount * grind_4_derisk_grinds))
       #   and (grind_4_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
-      grind_entry = grind_4_orders[-1]
-      grind_amount = grind_entry.safe_filled
-      if not is_futures_mode and grind_entry.safe_fee_base:
-        grind_amount = grind_entry.safe_amount_after_fee
+      grind_orders = grind_4_orders
+      grind_amount = grind_4_total_amount
+      if self.system_v4_grind_derisk_mode == "oldest":
+        grind_orders = grind_4_orders[-1:]
+        grind_amount = grind_orders[0].safe_filled
+      elif self.system_v4_grind_derisk_mode == "keep_latest" and len(grind_4_orders) > 1:
+        grind_orders = grind_4_orders[1:]
+        grind_amount = sum(order.safe_filled for order in grind_orders)
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_orders):
+        grind_amount = sum(order.safe_amount_after_fee for order in grind_orders)
       sell_amount = grind_amount * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
@@ -45508,7 +45546,9 @@ class NostalgiaForInfinityX8(IStrategy):
         log.info(
           f"Grinding de-risk (grind_4_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Coin amount: {grind_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_4_current_grind_profit_stake:{stake_fmt}} {stake_currency})"
         )
-        order_tag = f"grind_4_derisk {grind_entry.id}"
+        order_tag = "grind_4_derisk"
+        for grind_entry in grind_orders:
+          order_tag += " " + str(grind_entry.id)
         if has_order_tags:
           return -ft_sell_amount, order_tag
         else:
@@ -45607,10 +45647,16 @@ class NostalgiaForInfinityX8(IStrategy):
       #   and (grind_5_current_grind_profit_stake < (slice_amount * grind_5_derisk_grinds))
       #   and (grind_5_orders[-1].order_date_utc.replace(tzinfo=None) >= datetime(2025, 8, 3) or is_backtest)
       # ):
-      grind_entry = grind_5_orders[-1]
-      grind_amount = grind_entry.safe_filled
-      if not is_futures_mode and grind_entry.safe_fee_base:
-        grind_amount = grind_entry.safe_amount_after_fee
+      grind_orders = grind_5_orders
+      grind_amount = grind_5_total_amount
+      if self.system_v4_grind_derisk_mode == "oldest":
+        grind_orders = grind_5_orders[-1:]
+        grind_amount = grind_orders[0].safe_filled
+      elif self.system_v4_grind_derisk_mode == "keep_latest" and len(grind_5_orders) > 1:
+        grind_orders = grind_5_orders[1:]
+        grind_amount = sum(order.safe_filled for order in grind_orders)
+      if not is_futures_mode and any(order.safe_fee_base for order in grind_orders):
+        grind_amount = sum(order.safe_amount_after_fee for order in grind_orders)
       sell_amount = grind_amount * exit_rate / trade_leverage
       if ((current_stake_amount / trade_leverage) - sell_amount) < (min_stake * 1.55):
         sell_amount = (trade_amount * exit_rate / trade_leverage) - (min_stake * 1.55)
@@ -45642,7 +45688,9 @@ class NostalgiaForInfinityX8(IStrategy):
         log.info(
           f"Grinding de-risk (grind_5_derisk) [{current_time}] [{trade_pair}] | Rate: {exit_rate} | Stake amount: {sell_amount:{stake_fmt}} | Coin amount: {grind_amount:{stake_fmt}} | Profit (stake): {profit_stake:{stake_fmt}} | Profit: {(profit_ratio * 100.0):.2f}% | Grind profit: {(grind_profit * 100.0):.2f}% ({grind_5_current_grind_profit_stake:{stake_fmt}} {stake_currency})"
         )
-        order_tag = f"grind_5_derisk {grind_entry.id}"
+        order_tag = "grind_5_derisk"
+        for grind_entry in grind_orders:
+          order_tag += " " + str(grind_entry.id)
         if has_order_tags:
           return -ft_sell_amount, order_tag
         else:
