@@ -243,6 +243,10 @@ Key risk management components include:
 
 The derisking system is particularly important for preventing catastrophic losses during extended bear markets. When a trade reaches a derisk condition (typically a significant loss threshold), the system can initiate partial or full exits to preserve capital. The derisk thresholds vary by trading mode, with futures positions having different thresholds than spot positions due to leverage effects.
 
+**Original LONG V4 queues (`grind_1`–`grind_5`).** The existing reverse order scan reconstructs each queue using the native entry IDs in `grind_N_exit ID...` and `grind_N_derisk ID...` tags. Only the named entries are retired; other entries remain in the queue, and repeated IDs are deduplicated. Unattributed exits and `derisk_global` retain their older-cohort boundary. De-risking keeps the configured raw queue-weighted-average trigger, not an individual entry's loss or leveraged PnL, but targets only the last item in the remaining newest-first list. It retains entry priority, base-asset fee handling and native minimum/reserve/leverage guards rather than selecting a different entry when that target is blocked. Ordinary profit exits still address the remaining group together.
+
+Tag membership is not a claim that an order has fully filled. Actual `Trade` and `Order` balances retain any pending physical quantity; the managed partial-exit recovery described above retries the actual remainder first with the complete same tag, without requiring the profit trigger again. No new tag family, additional history replay or persisted per-entry quantity ledger is used. Short, older stored-system and legacy `120`/`121` routes are unchanged.
+
 The system also implements order safety checks to prevent over-leveraging and ensure compliance with exchange requirements. These checks validate that each order meets minimum stake requirements and does not exceed maximum position size limits. The strategy also considers exchange-specific limitations, such as the number of candles available per API call, to ensure reliable data access.
 
 ```mermaid
