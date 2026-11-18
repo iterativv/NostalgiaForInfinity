@@ -243,6 +243,33 @@ Key risk management components include:
 
 The derisking system is particularly important for preventing catastrophic losses during extended bear markets. When a trade reaches a derisk condition (typically a significant loss threshold), the system can initiate partial or full exits to preserve capital. The derisk thresholds vary by trading mode, with futures positions having different thresholds than spot positions due to leverage effects.
 
+**Original LONG V4 queues (`grind_1`–`grind_5`).** The existing single reverse order scan reconstructs each queue using the native entry IDs in `grind_N_exit ID...` and `grind_N_derisk ID...` tags. Only the named entries are retired; other entries remain in the queue, and repeated IDs are deduplicated. Unattributed exits and `derisk_global` retain their older-cohort boundary.
+
+`system_v4_grind_derisk_mode` controls only these five queues:
+
+| Value | Entries selected when the queue's de-risk condition is met |
+| --- | --- |
+| `all` (default) | All remaining entries, preserving the native whole-queue behavior. |
+| `oldest` | Only the oldest remaining entry: the last item in the newest-first list. |
+| `keep_latest` | All entries except the newest: keep the first list item and sell the older items. If only one entry remains, sell that one. |
+
+All three modes use the configured raw price change against the weighted average of **all remaining entries in the queue**, including the entry kept by `keep_latest`. They do not use leveraged PnL or the average of only the entries selected for sale. Chronological list membership determines selection, not a price sort or a search for another eligible entry. Ordinary profit exits still address the remaining group together.
+
+The default requires no new configuration and does not opt existing trades into a different selection mode. To explicitly select an alternative, use the existing advanced parameter mechanism:
+
+```json
+{
+  "nfi_advanced_mode": true,
+  "nfi_parameters": {
+    "system_v4_grind_derisk_mode": "oldest"
+  }
+}
+```
+
+The applied value must be exactly `all`, `oldest`, or `keep_latest`; invalid applied values fail at startup. Without advanced mode, the existing unsafe-parameter warning and ignore behavior applies. Thresholds, stakes, spacing, entry priority, base-asset fee handling, exchange precision and native minimum/reserve/leverage guards remain unchanged. A blocked selected subset is not enlarged with an excluded entry to meet the minimum.
+
+Tag membership is not a claim that an order has fully filled. Actual `Trade` and `Order` balances retain any pending physical quantity; the managed partial-exit recovery described above retries the actual remainder first with the complete same tag, without requiring the profit trigger again. No new tag family, additional history replay or persisted per-entry quantity ledger is used. Short, older stored-system and legacy `120`/`121` routes are unchanged.
+
 The system also implements order safety checks to prevent over-leveraging and ensure compliance with exchange requirements. These checks validate that each order meets minimum stake requirements and does not exceed maximum position size limits. The strategy also considers exchange-specific limitations, such as the number of candles available per API call, to ensure reliable data access.
 
 ```mermaid
