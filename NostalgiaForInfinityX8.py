@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.274"
+    return "v18.0.275"
 
   stoploss = -0.99
 
@@ -5721,7 +5721,17 @@ class NostalgiaForInfinityX8(IStrategy):
     df["protections_long_rebuy"] = True
 
     # Global protections Short
-    df["protections_short_global"] = True
+    df["protections_short_global"] = (
+      # 1h & 4h & 1d down move, 1h low, 4h oversold
+      ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25) | (stochrsi_k_1h_gt_10) | (roc_9_4h_gt_neg_15))
+      # 4h & 1d up move, 15m & 1h & 4h uptrend
+      & ((rsi_3_4h_lt_90) | (rsi_3_1d_lt_90) | (aroonu_14_15m_lt_100) | (aroonu_14_1h_lt_100) | (aroonu_14_4h_lt_100))
+      # 4h down move, 1h & 4h uptrend, 1d low, 1d oversold
+      & (
+        (rsi_3_4h_lt_90) | (aroonu_14_1h_lt_100) | (aroonu_14_4h_lt_100) | (aroonu_14_1d_gt_10) | (roc_9_1d_gt_neg_15)
+      )
+    )
+
     df["global_protections_short_pump"] = True
     df["global_protections_short_dump"] = True
     df["protections_short_rebuy"] = True
