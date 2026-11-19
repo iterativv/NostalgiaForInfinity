@@ -108,7 +108,9 @@
       // with 67-129% single-day ranges and -30% to -99% off their highs (2026-09-07):
       // 龙虾 -41.9%/121% day, 我踏马来了 -80.7%/129% day, 牛来 -35.0%/70% day, 哈基米 -29.9%/67% day.
       // Spot-only siblings are further gone: 老子 -93.4%, 人生K线 -93.5%/855% day, 小股东 -98.9%, 旺财 -93.3%/1175% day.
-      "(龙虾|哈基米|牛来|我踏马来了|老子|人生K线|小股东|旺财)/.*",
+      // Bybit/KuCoin list the same tokens under pinyin names: NIULAI=牛来, LONGXIA=龙虾, HAJIMI=哈基米,
+      // WOTAMALAILE=我踏马来了, BNRENSHENG=币安人生 (KuCoin "name" field). 牛来 -51% in 40 days to 2026-11-19.
+      "(龙虾|哈基米|牛来|我踏马来了|老子|人生K线|小股东|旺财|BNRENSHENG|HAJIMI|LONGXIA|NIULAI|WOTAMALAILE)/.*",
       // Parabolic squeeze — 542 shorts liquidated on 4 accounts, 2026-08-07 (+801%/7d)
       "(TUT)/.*",
       // Operator winding down — Blur announced on 2026-10-12 that its frontend is deprecated on
