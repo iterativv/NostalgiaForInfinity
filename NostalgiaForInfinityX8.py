@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.272"
+    return "v18.0.273"
 
   stoploss = -0.99
 
@@ -31894,6 +31894,7 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           short_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           short_entry_logic.append(protections_short_global == True)
+
           short_entry_logic.append(roc_9_1d < 5.0)
           # TAG562: no shorts within 12% of the 30d high, read off the 1d frame
           short_entry_logic.append(((close / high_max_30_1d - 1.0) < -0.12) | np.isnan(high_max_30_1d))
@@ -31902,7 +31903,6 @@ class NostalgiaForInfinityX8(IStrategy):
           short_entry_logic.append(rsi_14_4h < 48.0)
           short_entry_logic.append(rsi_14_1d < 50.0)
           short_entry_logic.append(rsi_14_1d > 25.0)
-
           short_entry_logic.append(
             # Downtrend confirmation (higher TF)
             (ema_12_4h < ema_200_4h)
@@ -32495,6 +32495,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_gt_30) | (rsi_3_4h_gt_30) | (aroonu_14_1h_gt_20))
             # 1h & 4h & 1d down move, 4h & 1d low
             & ((rsi_3_1h_gt_30) | (rsi_3_4h_gt_45) | (rsi_3_1d_gt_45) | (aroonu_14_4h_gt_0) | (aroonu_14_1d_gt_0))
+            # 1h & 1d down move, 4h low, 1d oversold
+            & ((rsi_3_1h_gt_30) | (rsi_3_1d_gt_35) | (aroonu_14_4h_gt_20) | (roc_9_1d_gt_neg_10))
             # 1h & 1d down move, 1h & 1d low, 1d oversold
             & (
               (rsi_3_1h_gt_30) | (rsi_3_1d_gt_40) | (aroonu_14_1h_gt_10) | (stochrsi_k_1d_gt_10) | (roc_9_1d_gt_neg_30)
