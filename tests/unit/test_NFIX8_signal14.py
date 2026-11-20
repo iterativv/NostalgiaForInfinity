@@ -137,6 +137,9 @@ def test_btc_1h_is_read_only_inside_the_block():
 
 def test_every_clause_is_a_cached_boolean():
   src = _src()
+  # Only the entry trend scope: the global protections in populate_indicators keep their own copies.
+  start = src.index("  def populate_entry_trend(")
+  src = src[start : src.index("\n  def ", start + 1)]
   for name in {c for chain in _chains() for c in CLAUSE.findall(chain)}:
     # Then: '<name> = <series> <op> <number>' is defined once, outside the block.
     defs = re.findall(rf"^\s{{2,6}}{re.escape(name)} = [a-z0-9_]+ [<>] -?\d+(?:\.\d+)?$", src, re.M)
