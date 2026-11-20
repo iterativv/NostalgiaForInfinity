@@ -5706,6 +5706,8 @@ class NostalgiaForInfinityX8(IStrategy):
     df["protections_long_global"] = (
       # 1h & 3h & 1d down move, 4h still high, 1d downtrend
       ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25) | (stochrsi_k_4h_lt_50) | (roc_9_1d_gt_neg_50))
+      # 1h & 1d down move, 4h high, 1h & 1d downtrend
+      & ((rsi_3_1h_gt_10) | (rsi_3_1d_gt_20) | (stochrsi_k_4h_lt_80) | (roc_9_1h_gt_neg_10) | (roc_9_1d_gt_neg_30))
       # 1h & 4h down move, 1h high, 4h high, 1d downtrend
       & ((rsi_3_1h_gt_40) | (rsi_3_4h_gt_50) | (aroonu_14_1h_lt_80) | (stochrsi_k_4h_lt_70) | (roc_9_1d_gt_neg_40))
       # 1h & 4h down move, 15m high, 4h & 1d overbought
@@ -6619,6 +6621,7 @@ class NostalgiaForInfinityX8(IStrategy):
     aroond_14_15m_lt_50 = aroond_14_15m < 50.0
     aroond_14_15m_lt_70 = aroond_14_15m < 70.0
     aroond_14_15m_lt_80 = aroond_14_15m < 80.0
+    aroond_14_15m_lt_100 = aroond_14_15m < 100.0
     aroond_14_1h_lt_25 = aroond_14_1h < 25.0
     aroond_14_1h_lt_50 = aroond_14_1h < 50.0
     aroond_14_1h_lt_70 = aroond_14_1h < 70.0
@@ -6631,6 +6634,7 @@ class NostalgiaForInfinityX8(IStrategy):
     aroond_14_4h_lt_85 = aroond_14_4h < 85.0
     aroond_14_4h_lt_100 = aroond_14_4h < 100.0
     aroond_14_1d_lt_90 = aroond_14_1d < 90.0
+    aroond_14_1d_lt_100 = aroond_14_1d < 100.0
     aroonu_14_gt_75 = aroonu_14 > 75.0
     aroonu_14_15m_gt_0 = aroonu_14_15m > 0.0
     aroonu_14_15m_gt_10 = aroonu_14_15m > 10.0
