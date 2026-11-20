@@ -19,7 +19,7 @@ from NostalgiaForInfinityX8 import NostalgiaForInfinityX8
 NOW = datetime(2026, 10, 8, 12, tzinfo=timezone.utc)
 EXIT_TAGS = (
   [f"derisk_level_{level}" for level in range(1, 5)]
-  + ["derisk_global"]
+  + ["derisk_global", "partial_exit"]
   + [f"grind_{level}_{kind} 2" for level in range(1, 6) for kind in ("exit", "derisk")]
 )
 
@@ -128,7 +128,6 @@ def test_partial_exit_retries_eligible_remainder(partial_exit_case, tag):
     "exit_long_normal_1",
     "exit_short_normal_1",
     "force_exit",
-    "partial_exit",
     "buyback_1_exit 2",
     "rebuy_exit 2",
     "grind_6_exit 2",
@@ -154,10 +153,11 @@ def test_partial_exit_does_not_retry_zero_full_or_open_order(partial_exit_case, 
   assert result is None
 
 
+@pytest.mark.parametrize("tag", ["grind_1_exit 2", "partial_exit"])
 @pytest.mark.parametrize("rate", [80.0, 120.0])
-def test_partial_exit_preserves_coin_amount_when_price_changes(partial_exit_case, rate):
+def test_partial_exit_preserves_coin_amount_when_price_changes(partial_exit_case, rate, tag):
   strategy, trade = partial_exit_case
-  add_order(trade, trade.exit_side, "grind_1_exit 2", 4.0, 1.0, "canceled")
+  add_order(trade, trade.exit_side, tag, 4.0, 1.0, "canceled")
 
   result = run_adjust(strategy, trade, rate)
 
@@ -165,20 +165,22 @@ def test_partial_exit_preserves_coin_amount_when_price_changes(partial_exit_case
   assert -result[0] * trade.amount / trade.stake_amount == pytest.approx(3.0)
 
 
-def test_partial_exit_retries_only_latest_remainder(partial_exit_case):
+@pytest.mark.parametrize("tag", ["grind_1_exit 2", "partial_exit"])
+def test_partial_exit_retries_only_latest_remainder(partial_exit_case, tag):
   strategy, trade = partial_exit_case
-  add_order(trade, trade.exit_side, "grind_1_exit 2", 4.0, 1.0, "canceled")
-  add_order(trade, trade.exit_side, "grind_1_exit 2", 3.0, 1.0, "canceled")
+  add_order(trade, trade.exit_side, tag, 4.0, 1.0, "canceled")
+  add_order(trade, trade.exit_side, tag, 3.0, 1.0, "canceled")
 
   result = run_adjust(strategy, trade)
 
-  assert result == (-200.0 / trade.leverage, "grind_1_exit 2")
+  assert result == (-200.0 / trade.leverage, tag)
 
 
-def test_partial_exit_stops_after_remainder_fills(partial_exit_case):
+@pytest.mark.parametrize("tag", ["grind_1_exit 2", "partial_exit"])
+def test_partial_exit_stops_after_remainder_fills(partial_exit_case, tag):
   strategy, trade = partial_exit_case
-  add_order(trade, trade.exit_side, "grind_1_exit 2", 4.0, 1.0, "canceled")
-  add_order(trade, trade.exit_side, "grind_1_exit 2", 3.0, 3.0)
+  add_order(trade, trade.exit_side, tag, 4.0, 1.0, "canceled")
+  add_order(trade, trade.exit_side, tag, 3.0, 3.0)
 
   result = run_adjust(strategy, trade)
 
@@ -186,9 +188,10 @@ def test_partial_exit_stops_after_remainder_fills(partial_exit_case):
   assert trade.amount == 10.0
 
 
-def test_partial_exit_ignores_older_partial_after_normal_exit(partial_exit_case):
+@pytest.mark.parametrize("tag", ["grind_1_exit 2", "partial_exit"])
+def test_partial_exit_ignores_older_partial_after_normal_exit(partial_exit_case, tag):
   strategy, trade = partial_exit_case
-  add_order(trade, trade.exit_side, "grind_1_exit 2", 4.0, 1.0, "canceled")
+  add_order(trade, trade.exit_side, tag, 4.0, 1.0, "canceled")
   add_order(trade, trade.exit_side, "exit_normal", 13.0, 1.0, "canceled")
 
   result = run_adjust(strategy, trade)
@@ -196,14 +199,15 @@ def test_partial_exit_ignores_older_partial_after_normal_exit(partial_exit_case)
   assert result is None
 
 
-def test_partial_exit_zero_fill_retry_keeps_original_remainder(partial_exit_case):
+@pytest.mark.parametrize("tag", ["grind_1_exit 2", "partial_exit"])
+def test_partial_exit_zero_fill_retry_keeps_original_remainder(partial_exit_case, tag):
   strategy, trade = partial_exit_case
-  add_order(trade, trade.exit_side, "grind_1_exit 2", 4.0, 1.0, "canceled")
-  add_order(trade, trade.exit_side, "grind_1_exit 2", 3.0, 0.0, "canceled")
+  add_order(trade, trade.exit_side, tag, 4.0, 1.0, "canceled")
+  add_order(trade, trade.exit_side, tag, 3.0, 0.0, "canceled")
 
   result = run_adjust(strategy, trade)
 
-  assert result == (-300.0 / trade.leverage, "grind_1_exit 2")
+  assert result == (-300.0 / trade.leverage, tag)
 
 
 def test_partial_exit_precedes_new_grind_entry(partial_exit_case):
