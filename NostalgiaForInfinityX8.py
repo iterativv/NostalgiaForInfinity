@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.277"
+    return "v18.0.278"
 
   stoploss = -0.99
 
@@ -6769,6 +6769,7 @@ class NostalgiaForInfinityX8(IStrategy):
     stochrsi_k_15m_lt_60 = stochrsi_k_15m < 60.0
     stochrsi_k_15m_lt_70 = stochrsi_k_15m < 70.0
     stochrsi_k_15m_lt_80 = stochrsi_k_15m < 80.0
+    stochrsi_k_15m_lt_90 = stochrsi_k_15m < 90.0
     stochrsi_k_1h_gt_10 = stochrsi_k_1h > 10.0
     stochrsi_k_1h_gt_20 = stochrsi_k_1h > 20.0
     stochrsi_k_1h_gt_30 = stochrsi_k_1h > 30.0
@@ -33002,6 +33003,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_lt_70) | (rsi_3_1h_lt_70) | (stochrsi_k_4h_gt_30) | (roc_9_1d_gt_neg_10))
             # 15m & 1h up move, 4h low, 1d oversold
             & ((rsi_3_15m_lt_70) | (rsi_3_1h_lt_60) | (stochrsi_k_4h_gt_20) | (roc_9_1d_gt_neg_10))
+            # 15m up move, 1d down move, 15m uptrend, 4h low
+            & ((rsi_3_15m_lt_70) | (rsi_3_1d_gt_30) | (stochrsi_k_15m_lt_90) | (stochrsi_k_4h_gt_30))
             # 1h & 4h up move, 1h uptrend, 4h still low
             & ((rsi_3_1h_lt_90) | (rsi_3_4h_lt_70) | (aroonu_14_1h_lt_100) | (aroonu_14_4h_gt_50))
             # 1h & 4h up move, 1h uptrend, 4h still low
