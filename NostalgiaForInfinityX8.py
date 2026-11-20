@@ -70,7 +70,7 @@ class NostalgiaForInfinityX8(IStrategy):
   INTERFACE_VERSION = 3
 
   def version(self) -> str:
-    return "v18.0.275"
+    return "v18.0.276"
 
   stoploss = -0.99
 
@@ -5415,12 +5415,14 @@ class NostalgiaForInfinityX8(IStrategy):
     aroond_14_1h_lt_25 = aroond_14_1h < 25.0
     aroond_14_1h_lt_50 = aroond_14_1h < 50.0
     aroond_14_1h_lt_70 = aroond_14_1h < 70.0
+    aroond_14_1h_lt_100 = aroond_14_1h < 100.0
     aroond_14_4h_lt_25 = aroond_14_4h < 25.0
     aroond_14_4h_lt_40 = aroond_14_4h < 40.0
     aroond_14_4h_lt_50 = aroond_14_4h < 50.0
     aroond_14_4h_lt_70 = aroond_14_4h < 70.0
     aroond_14_4h_lt_80 = aroond_14_4h < 80.0
     aroond_14_4h_lt_85 = aroond_14_4h < 85.0
+    aroond_14_4h_lt_100 = aroond_14_4h < 100.0
     aroonu_14_gt_75 = aroonu_14 > 75.0
     aroonu_14_15m_gt_0 = aroonu_14_15m > 0.0
     aroonu_14_15m_gt_10 = aroonu_14_15m > 10.0
@@ -5724,6 +5726,8 @@ class NostalgiaForInfinityX8(IStrategy):
     df["protections_short_global"] = (
       # 1h & 4h & 1d down move, 1h low, 4h oversold
       ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25) | (stochrsi_k_1h_gt_10) | (roc_9_4h_gt_neg_15))
+      # 1h & 4h & 1d down move, 4h low, 1d oversold
+      & ((rsi_3_1h_gt_30) | (rsi_3_4h_gt_30) | (rsi_3_1d_gt_35) | (stochrsi_k_4h_gt_20) | (roc_9_1d_gt_neg_30))
       # 4h & 1d up move, 15m & 1h & 4h uptrend
       & ((rsi_3_4h_lt_90) | (rsi_3_1d_lt_90) | (aroonu_14_15m_lt_100) | (aroonu_14_1h_lt_100) | (aroonu_14_4h_lt_100))
       # 4h down move, 1h & 4h uptrend, 1d low, 1d oversold
@@ -6618,12 +6622,15 @@ class NostalgiaForInfinityX8(IStrategy):
     aroond_14_1h_lt_25 = aroond_14_1h < 25.0
     aroond_14_1h_lt_50 = aroond_14_1h < 50.0
     aroond_14_1h_lt_70 = aroond_14_1h < 70.0
+    aroond_14_1h_lt_100 = aroond_14_1h < 100.0
     aroond_14_4h_lt_25 = aroond_14_4h < 25.0
     aroond_14_4h_lt_40 = aroond_14_4h < 40.0
     aroond_14_4h_lt_50 = aroond_14_4h < 50.0
     aroond_14_4h_lt_70 = aroond_14_4h < 70.0
     aroond_14_4h_lt_80 = aroond_14_4h < 80.0
     aroond_14_4h_lt_85 = aroond_14_4h < 85.0
+    aroond_14_4h_lt_100 = aroond_14_4h < 100.0
+    aroond_14_1d_lt_90 = aroond_14_1d < 90.0
     aroonu_14_gt_75 = aroonu_14 > 75.0
     aroonu_14_15m_gt_0 = aroonu_14_15m > 0.0
     aroonu_14_15m_gt_10 = aroonu_14_15m > 10.0
