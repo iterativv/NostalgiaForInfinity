@@ -40,7 +40,7 @@ def partial_bot(partial_exit_case, mocker):
 
   def create_order(**kwargs):
     return {
-      "id": "minimum-retry",
+      "id": f"minimum-retry-{len(trade.orders)}",
       "symbol": trade.pair,
       "type": "limit",
       "side": kwargs["side"],
@@ -61,6 +61,7 @@ def partial_bot(partial_exit_case, mocker):
   return bot
 
 
+@pytest.mark.parametrize("exit_kind", ["managed", "partial_exit"])
 @pytest.mark.parametrize(
   "requested,remainder,rate,eligible",
   [
@@ -74,12 +75,17 @@ def partial_bot(partial_exit_case, mocker):
   ids=["current-value-only", "binary-current-value", "both-values", "below-minimum", "exact-minimum", "full-close"],
 )
 def test_engine_retries_using_current_value_minimum(
-  partial_bot, partial_exit_case, requested, remainder, rate, eligible
+  partial_bot, partial_exit_case, requested, remainder, rate, eligible, exit_kind
 ):
-  _, trade = partial_exit_case
+  strategy, trade = partial_exit_case
+  # Isolate retry eligibility; ordinary grind exits have their own fallthrough coverage.
+  for level in range(1, 6):
+    setattr(strategy, f"system_v4_grind_{level}_use_derisk", False)
   if trade.leverage > 1:
     trade.liquidation_price = 132.0 if trade.is_short else 68.0
   tag = "derisk_global" if requested == 14.0 else f"grind_1_exit {trade.orders[1].id}"
+  if exit_kind == "partial_exit":
+    tag = "partial_exit"
   partial.add_order(trade, trade.exit_side, tag, requested, requested - remainder, "canceled", price=rate)
   partial_bot.exchange.get_rates.return_value = (rate, rate)
 
@@ -115,6 +121,95 @@ def test_engine_retries_using_current_value_minimum(
     assert not trade.is_open
   else:
     assert trade.amount == pytest.approx(10.0)
+
+
+@pytest.mark.parametrize("partial_exit_case", [(True, 3.0)], indirect=True, ids=["short"])
+def test_engine_unexecutable_remainder_can_place_independent_grind_derisk(partial_bot, partial_exit_case):
+  _, trade = partial_exit_case
+  trade.liquidation_price = 132.0
+  canceled = partial.add_order(trade, trade.exit_side, "partial_exit", 4.0, 3.98, "canceled", price=128.0)
+  partial_bot.exchange.get_rates.return_value = (128.0, 128.0)
+
+  partial_bot.check_and_call_adjust_trade_position(trade)
+
+  partial_bot.execute_entry.assert_not_called()
+  partial_bot.exchange.create_order.assert_called_once()
+  assert partial_bot.exchange.create_order.call_args.kwargs["reduceOnly"] is True
+  order = trade.orders[-1]
+  assert order is not canceled
+  assert order.ft_order_side == trade.exit_side
+  assert order.ft_order_tag.split()[0] == "grind_1_derisk"
+  assert order.amount == pytest.approx(4.0)
+  assert order.amount > canceled.safe_remaining
+  assert order.ft_is_open
+  assert trade.amount == pytest.approx(10.02)
+
+
+@pytest.mark.parametrize("delay", [timedelta(minutes=1), timedelta(hours=1)], ids=["one-minute", "one-hour"])
+@pytest.mark.parametrize("tag", ["grind_1_exit 2", "partial_exit"])
+def test_engine_retries_only_latest_remainder_until_complete(partial_bot, partial_exit_case, mocker, delay, tag):
+  _, trade = partial_exit_case
+  partial_bot.config["dry_run_wallet"] = 100000.0
+  partial_bot.wallets = Wallets(partial_bot.config, partial_bot.exchange)
+  for entry in trade.orders:
+    entry.amount = entry.filled = entry.ft_amount = entry.amount * 10.0
+    entry.cost = entry.filled * entry.safe_price
+  trade.recalc_trade_from_orders()
+  partial.add_order(trade, trade.exit_side, tag, 100.0, 20.0, "canceled")
+  assert trade.amount == pytest.approx(120.0)
+  clock = mocker.patch("freqtrade.freqtradebot.datetime", wraps=datetime).now
+  clock.return_value = partial.NOW
+
+  for amount, filled, status, rate, remaining in [
+    (80.0, 20.0, "canceled", 80.0, 100.0),
+    (60.0, 60.0, "closed", 120.0, 40.0),
+  ]:
+    clock.return_value += delay
+    partial_bot.exchange.get_rates.return_value = (rate, rate)
+    partial_bot.exchange.create_order.reset_mock()
+
+    partial_bot.check_and_call_adjust_trade_position(trade)
+
+    partial_bot.execute_entry.assert_not_called()
+    partial_bot.exchange.create_order.assert_called_once()
+    retry = trade.orders[-1]
+    assert retry.ft_order_side == trade.exit_side
+    assert retry.ft_order_tag == tag
+    assert retry.amount == pytest.approx(amount)
+    assert retry.ft_is_open
+    partial_bot.exchange.create_order.reset_mock()
+
+    partial_bot.check_and_call_adjust_trade_position(trade)
+
+    partial_bot.exchange.create_order.assert_not_called()
+    partial_bot.execute_entry.assert_not_called()
+    assert trade.orders[-1] is retry
+    retry.update_from_ccxt_object(
+      {
+        "id": retry.order_id,
+        "status": status,
+        "amount": amount,
+        "filled": filled,
+        "remaining": amount - filled,
+        "price": rate,
+        "average": rate,
+        "cost": filled * rate,
+        "timestamp": int(clock.return_value.timestamp() * 1000),
+        "lastTradeTimestamp": int(clock.return_value.timestamp() * 1000),
+      }
+    )
+    trade.update_trade(retry)
+    assert trade.amount == pytest.approx(remaining)
+
+  clock.return_value += delay
+  partial_bot.exchange.create_order.reset_mock()
+
+  partial_bot.check_and_call_adjust_trade_position(trade)
+
+  partial_bot.exchange.create_order.assert_not_called()
+  partial_bot.execute_entry.assert_not_called()
+  assert trade.amount == pytest.approx(40.0)
+  assert trade.is_open
 
 
 @pytest.fixture(params=["grind", "regular"])
