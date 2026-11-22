@@ -30638,6 +30638,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_1h_lt_95) | (aroonu_14_4h_gt_10))
             # 1h & 4h up move, 1h still moving higher
             & ((rsi_3_1h_lt_90) | (rsi_3_4h_lt_85) | (cci_20_change_pct_1h_lt_neg_0))
+            # 1h & 4h up move, 1d low
+            & ((rsi_3_1h_lt_90) | (rsi_3_4h_lt_70) | (aroonu_14_1d_gt_30))
             # 1h & 4h up move, 4h still not high enough
             & ((rsi_3_1h_lt_90) | (rsi_3_4h_lt_70) | (stochrsi_k_4h_gt_80))
             # 1h & 1d up move, 15m still low
