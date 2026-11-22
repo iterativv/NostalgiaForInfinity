@@ -177,6 +177,17 @@
       // The exploit day left the 3-day RangeStabilityFilter window on 11-17 (RoC 1.75 -> 0.51), so
       // the pair is selectable again. Perp on binance (~$56M/day), bybit and bitget; spot on binance.
       "(KAVA)/.*",
+      // Binance Monitoring Tag (iterativ, 2026-11-22) — tagged 2026-11-20 with BANK, INIT, MITO and
+      // ONE, which were already listed. THE -51.4% and ZIL -62.0% over thirty days; ZIL is also
+      // leaving its own L1 for an Ethereum L2 (announced 2026-11-04). Perps on binance, bybit, bitget.
+      "(THE|ZIL)/.*",
+      // Vault exploit (iterativ, 2026-11-22) — Chainflip lost ~$4.86M from its Ethereum vault on
+      // 2026-11-21 through a suspected signing-key compromise and paused the protocol; FLIP closed
+      // -28.5% that day on an 82% range. Spot on kucoin and gateio, no perp.
+      "(FLIP)/.*",
+      // Pump-and-dump (iterativ, 2026-11-22) — SkyAI, +31.4% on 2026-11-21 on a 51% range and a 26%
+      // range the day before; ~$98M/day on the binance perp. Bybit lists it as SKYAI1.
+      "(SKYAI|SKYAI1)/.*",
       // Stock perps not yet listed by name (Bitget isRwa: YES), found against a user's local
       // Bitget blacklist (iterativ, 2026-11-18).
       "(MSFT|MSTR|NVDA)/.*",
