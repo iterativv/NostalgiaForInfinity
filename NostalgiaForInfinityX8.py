@@ -15957,6 +15957,8 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          # Avoid entering a 5m candle that is still deeply oversold.
+          long_entry_logic.append(rsi_14 > 25.0)
 
           long_entry_logic.append(
             (rsi_3_15m_gt_5)
