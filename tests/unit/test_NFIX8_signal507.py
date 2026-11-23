@@ -198,6 +198,12 @@ CHAINS = {
   "(rsi_14_15m_lt_30) | (rsi_3_1h_gt_55) | (aroonu_14_1h_gt_0) | (aroonu_14_4h_lt_70) | (rsi_3_1d_gt_40)": "15m not oversold, 1h & 1d down move, 1h no new high, 4h uptrend",
   "(aroond_14_gt_75) | (stochrsi_k_1h_gt_10) | (aroonu_14_4h_lt_80) | (stochrsi_k_1d_lt_60)": "5m no fresh low, 1h low, 4h fresh high, 1d high",
   "(rsi_14_15m_lt_50) | (aroonu_14_15m_gt_0) | (rsi_3_1h_gt_45)": "15m up bias, 15m no new high, 1h down move",
+  "(rsi_3_15m_lt_50) | (rsi_3_1h_gt_20) | (aroonu_14_1h_lt_40) | (stochrsi_k_4h_lt_70)": "15m up move, 1h down move, 1h still high, 4h high",
+  "(stochrsi_k_lt_20) | (rsi_3_15m_gt_40) | (rsi_3_1h_lt_40)": "5m still not low enough, 15m down move, 1h up move",
+  "(stochrsi_k_15m_lt_50) | (aroonu_14_1h_lt_25) | (stochrsi_k_4h_gt_40) | (rsi_3_1d_lt_80)": "15m still high, 1h still not low enough, 4h low, 1d overbought",
+  "(rsi_3_lt_46) | (aroonu_14_15m_lt_20) | (rsi_3_1h_gt_35) | (stochrsi_k_1h_lt_60)": "5m up move, 15m still not low enough, 1h down move, 1h high",
+  "(rsi_3_15m_gt_45) | (aroonu_14_4h_lt_70) | (stochrsi_k_4h_gt_40) | (rsi_3_1d_gt_45)": "15m & 1d down move, 4h high & low",
+  "(rsi_3_15m_lt_50) | (aroonu_14_15m_lt_25) | (aroonu_14_1h_lt_50) | (stochrsi_k_1d_gt_30)": "15m up move, 15m still not low enough, 1h still high, 1d low",
 }
 TF_RANK = {"5m": 0, "15m": 1, "1h": 2, "4h": 3, "1d": 4}
 FAMILY = ["rsi_3", "rsi_14", "cmf_20", "mfi_14", "aroonu_14", "aroond_14", "stochrsi_k", "willr_14", "roc_2", "roc_9"]
