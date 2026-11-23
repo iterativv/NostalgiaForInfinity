@@ -87,6 +87,11 @@
     {
       "method": "StaticPairList"
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "stock" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "ETF" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "commodity" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "forex" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "xstocks" },
     { "method": "FullTradesFilter" },
     {
       "method": "SpreadFilter",

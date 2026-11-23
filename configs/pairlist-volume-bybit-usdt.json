@@ -6,6 +6,13 @@
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
+    // Bybit marks TradFi instruments in info.symbolType. PairInformationFilter in
+    // blacklist mode keeps pairs whose field is missing, so crypto and XAUT/PAXG stay.
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "stock" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "ETF" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "commodity" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "forex" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.symbolType", "info_compare_value": "xstocks" },
     { "method": "FullTradesFilter" },
     { "method": "AgeFilter", "min_days_listed": 60 },
     {
