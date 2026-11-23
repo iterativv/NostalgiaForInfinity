@@ -110,6 +110,11 @@ To use HTTP or SOCKS5 proxies, users must set environment variables:
 - HTTP_PROXY or HTTPS_PROXY for HTTP proxies
 - ALL_PROXY for SOCKS5 proxies (e.g., `socks5://user:pass@host:port`)
 
+This approach leverages the underlying CCXT library's proxy support, allowing seamless integration without modifying the trading bot's core code. The configuration ensures that all API requests to Binance are routed through the specified proxy server while maintaining proper rate limiting to avoid detection.
+
+**Section sources**
+- [proxy-binance.json](file://configs/proxy-binance.json#L1-L14)
+
 ## Restrict Binance Futures Markets
 
 CCXT normally loads several Binance market types when it initializes the exchange. If a Binance futures setup only trades USDT-M contracts, a timeout from the unused COIN-M API (`dapi.binance.com`) can prevent startup even when the USDT-M API is reachable. Add the following options to the Binance `exchange` section in your user configuration to limit market loading to linear contracts:
@@ -127,15 +132,10 @@ CCXT normally loads several Binance market types when it initializes the exchang
 }
 ```
 
-This setting is for Binance USDT-M futures only. Do not add it to the shared `trading_mode-futures.json`, because that file is also used with other exchanges. Merge these `options` into any existing CCXT configuration rather than replacing other settings. Confirm that your configured contract type matches the market type before starting live trading.
-
-**Section source**
-- [Binance futures market loading workaround](https://github.com/iterativv/NostalgiaForInfinity/issues/1596)
-
-This approach leverages the underlying CCXT library's proxy support, allowing seamless integration without modifying the trading bot's core code. The configuration ensures that all API requests to Binance are routed through the specified proxy server while maintaining proper rate limiting to avoid detection.
+This setting is for Binance USDT-M futures only. Do not add it to the shared `trading_mode-futures.json`, because that file is also used with other exchanges. Merge these `options` into any existing CCXT configuration rather than replacing other settings.
 
 **Section sources**
-- [proxy-binance.json](file://configs/proxy-binance.json#L1-L14)
+- [Binance futures market loading workaround](https://github.com/iterativv/NostalgiaForInfinity/issues/1596)
 
 ## Advanced Strategy Parameters in recommended_config.json
 
