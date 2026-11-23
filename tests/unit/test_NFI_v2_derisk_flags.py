@@ -122,7 +122,7 @@ def test_inactive_flags_arm_with_new_profit_and_time(flag_case, initial):
   if initial != "missing":
     trade.set_custom_data(f"{key}_flag", True)
     trade.set_custom_data(f"{key}_flag", None if initial == "legacy-null" else False)
-    assert stored_flag(trade, key) is False
+    assert not stored_flag(trade, key)
 
   result = adjust_profit(strategy, trade, profit)
 
