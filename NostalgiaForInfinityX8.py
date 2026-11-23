@@ -6416,6 +6416,7 @@ class NostalgiaForInfinityX8(IStrategy):
     roc_2 = np_view("ROC_2")
     roc_9 = np_view("ROC_9")
     rsi_14 = np_view("RSI_14")
+    rsi_14_gt_25 = rsi_14 > 25.0
     rsi_14_15m = np_view("RSI_14_15m")
     rsi_14_1d = np_view("RSI_14_1d")
     rsi_14_1h = np_view("RSI_14_1h")
@@ -15965,13 +15966,13 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
-          # Avoid entering a 5m candle that is still deeply oversold.
-          long_entry_logic.append(rsi_14 > 25.0)
-          # Avoid rebuys while the 1h timeframe is not oversold enough.
-          long_entry_logic.append(rsi_14_1h < 40.0)
 
           long_entry_logic.append(
-            (rsi_3_15m_gt_5)
+            # Avoid entering a 5m candle that is still deeply oversold.
+            (rsi_14_gt_25)
+            # Avoid rebuys while the 1h timeframe is not oversold enough.
+            & (rsi_14_1h_lt_40)
+            & (rsi_3_15m_gt_5)
             # 5m & 1h down move, 1h still not low enough
             & ((rsi_3_gt_3) | (rsi_3_1h_gt_10) | (aroonu_14_1h_lt_30))
             # 5m & 1d down move, 1d downtrend
