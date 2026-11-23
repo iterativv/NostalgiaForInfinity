@@ -5371,6 +5371,7 @@ class NostalgiaForInfinityX8(IStrategy):
     rsi_3_1d_lt_80 = rsi_3_1d < 80.0
     rsi_3_1d_lt_90 = rsi_3_1d < 90.0
     rsi_3_1d_lt_95 = rsi_3_1d < 95.0
+    rsi_14_gt_25 = rsi_14 > 25.0
     rsi_14_15m_lt_30 = rsi_14_15m < 30.0
     rsi_14_15m_lt_35 = rsi_14_15m < 35.0
     rsi_14_15m_lt_40 = rsi_14_15m < 40.0
@@ -6416,7 +6417,6 @@ class NostalgiaForInfinityX8(IStrategy):
     roc_2 = np_view("ROC_2")
     roc_9 = np_view("ROC_9")
     rsi_14 = np_view("RSI_14")
-    rsi_14_gt_25 = rsi_14 > 25.0
     rsi_14_15m = np_view("RSI_14_15m")
     rsi_14_1d = np_view("RSI_14_1d")
     rsi_14_1h = np_view("RSI_14_1h")
@@ -6593,6 +6593,7 @@ class NostalgiaForInfinityX8(IStrategy):
     rsi_3_1d_lt_80 = rsi_3_1d < 80.0
     rsi_3_1d_lt_90 = rsi_3_1d < 90.0
     rsi_3_1d_lt_95 = rsi_3_1d < 95.0
+    rsi_14_gt_25 = rsi_14 > 25.0
     rsi_14_15m_lt_30 = rsi_14_15m < 30.0
     rsi_14_15m_lt_35 = rsi_14_15m < 35.0
     rsi_14_15m_lt_40 = rsi_14_15m < 40.0
