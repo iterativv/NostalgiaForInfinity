@@ -15968,11 +15968,7 @@ class NostalgiaForInfinityX8(IStrategy):
           long_entry_logic.append(protections_long_global == True)
 
           long_entry_logic.append(
-            # Avoid entering a 5m candle that is still deeply oversold.
-            (rsi_14_gt_25)
-            # Avoid rebuys while the 1h timeframe is not oversold enough.
-            & (rsi_14_1h_lt_40)
-            & (rsi_3_15m_gt_5)
+            (rsi_3_15m_gt_5)
             # 5m & 1h down move, 1h still not low enough
             & ((rsi_3_gt_3) | (rsi_3_1h_gt_10) | (aroonu_14_1h_lt_30))
             # 5m & 1d down move, 1d downtrend
@@ -16598,6 +16594,9 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((close > (high_max_20_1d * 0.20)) | aroonu_14_1h_lt_70 | (roc_9_1d_gt_neg_70))
             # drop in last 20 days, 1d high, 1d downtrend
             & ((close > (high_max_20_1d * 0.20)) | (stochrsi_k_1d_lt_70) | (roc_9_1d_gt_neg_15))
+            # 5m not deeply oversold, 1h oversold
+            & (rsi_14_gt_25)
+            & (rsi_14_1h_lt_40)
           )
 
           # Logic
