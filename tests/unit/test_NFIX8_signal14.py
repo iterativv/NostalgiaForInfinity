@@ -72,8 +72,8 @@ def _lead_key(chain: str) -> tuple[int, int]:
 
 
 def test_the_block_has_its_protection_chains():
-  # Then: all 182 chains are there.
-  assert len(_chains()) == 182
+  # Then: all 132 chains are there.
+  assert len(_chains()) == 132
 
 
 def test_the_chains_live_inside_one_protection_append():
