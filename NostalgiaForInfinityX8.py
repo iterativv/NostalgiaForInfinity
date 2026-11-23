@@ -15944,6 +15944,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & (stochrsi_k_1h_lt_30)
             & (bbb_20_2_0_1h > 12.0)
             & (close_max_48 >= (close * 1.10))
+            # 4h not overbought: avoid 5m rebuy entries while 4h is above its midline.
+            & (rsi_14_4h < 50.0)
           )
 
         # Condition #63 - Rebuy mode (Long).
