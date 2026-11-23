@@ -80,6 +80,7 @@
     {
       "method": "StaticPairList"
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.isRwa", "info_compare_value": "YES" },
     { "method": "FullTradesFilter" },
     {
       "method": "SpreadFilter",

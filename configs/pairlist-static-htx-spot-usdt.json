@@ -87,6 +87,8 @@
     {
       "method": "StaticPairList"
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.tags", "info_compare_value": "tradfi,stock" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.tags", "info_compare_value": "tradfi,indices,stock" },
     { "method": "FullTradesFilter" },
     {
       "method": "SpreadFilter",

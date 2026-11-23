@@ -87,6 +87,7 @@
     {
       "method": "StaticPairList"
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.marketType", "info_compare_value": "NASDAQ" },
     { "method": "FullTradesFilter" },
     {
       "method": "SpreadFilter",
