@@ -15511,7 +15511,7 @@ class NostalgiaForInfinityX8(IStrategy):
             & (aroonu_14_lt_25)
             & (stochrsi_k_lt_30)
             & (ema_26 > ema_12)
-            & ((ema_26 - ema_12) > (open_rate * 0.030))
+            & ((ema_26 - ema_12) > (open_rate * 0.027))
             & ((ema_26_shift_1 - ema_12_shift_1) > (open_rate / 100.0))
           )
 
