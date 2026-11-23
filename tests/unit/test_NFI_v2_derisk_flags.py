@@ -4,6 +4,7 @@ from unittest.mock import MagicMock
 import pandas as pd
 import pytest
 from freqtrade.persistence import Trade
+from freqtrade.persistence.custom_data import CustomDataWrapper
 
 from NostalgiaForInfinityX7 import NostalgiaForInfinityX7
 from NostalgiaForInfinityX8 import NostalgiaForInfinityX8
@@ -14,10 +15,23 @@ NOW = partial_tests.NOW
 partial_exit_case = partial_tests.partial_exit_case
 
 
+@pytest.fixture
+def db_custom_data():
+  original_trade_use_db = Trade.use_db
+  original_wrapper_use_db = CustomDataWrapper.use_db
+  Trade.use_db = True
+  CustomDataWrapper.use_db = True
+  try:
+    yield
+  finally:
+    Trade.use_db = original_trade_use_db
+    CustomDataWrapper.use_db = original_wrapper_use_db
+
+
 @pytest.fixture(
   params=[(kind, level) for kind in (NostalgiaForInfinityX7, NostalgiaForInfinityX8) for level in (1, 2, 3)]
 )
-def flag_case(partial_exit_case, request):
+def flag_case(db_custom_data, partial_exit_case, request):
   original_strategy, trade = partial_exit_case
   kind, level = request.param
   strategy = kind.__new__(kind)
@@ -122,7 +136,7 @@ def test_inactive_flags_arm_with_new_profit_and_time(flag_case, initial):
   if initial != "missing":
     trade.set_custom_data(f"{key}_flag", True)
     trade.set_custom_data(f"{key}_flag", None if initial == "legacy-null" else False)
-    assert not stored_flag(trade, key)
+    assert stored_flag(trade, key) is False
 
   result = adjust_profit(strategy, trade, profit)
 
