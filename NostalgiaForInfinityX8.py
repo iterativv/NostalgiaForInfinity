@@ -15959,6 +15959,8 @@ class NostalgiaForInfinityX8(IStrategy):
           long_entry_logic.append(protections_long_global == True)
           # Avoid entering a 5m candle that is still deeply oversold.
           long_entry_logic.append(rsi_14 > 25.0)
+          # Avoid rebuys while the 1h timeframe is not oversold enough.
+          long_entry_logic.append(rsi_14_1h < 40.0)
 
           long_entry_logic.append(
             (rsi_3_15m_gt_5)
