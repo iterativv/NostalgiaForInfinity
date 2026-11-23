@@ -6926,7 +6926,6 @@ class NostalgiaForInfinityX8(IStrategy):
     roc_9_15m_lt_20 = roc_9_15m < 20.0
     rsi_14_change_pct_gt_0 = rsi_14_change_pct > 0.0
     rsi_3_change_pct_1d_gt_neg_20 = rsi_3_change_pct_1d > -20.0
-    rsi_14_gt_25 = rsi_14 > 25.0
 
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot", "webserver"]
     # the number of free slots
@@ -15966,8 +15965,6 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
-          long_entry_logic.append(rsi_14_gt_25)
-          long_entry_logic.append(rsi_14_1h_lt_40)
 
           long_entry_logic.append(
             (rsi_3_15m_gt_5)
@@ -16606,6 +16603,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & (ema_26 > ema_12)
             & ((ema_26 - ema_12) > (open_rate * 0.022))
             & ((ema_26_shift_1 - ema_12_shift_1) > (open_rate / 100.0))
+            & (rsi_14 > 25.0)
+            & (rsi_14_1h_lt_40)
           )
 
         # Condition #64 - Trend Pullback mode (Long).
