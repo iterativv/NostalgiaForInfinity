@@ -12,10 +12,11 @@
 1. [Introduction](#introduction)
 2. [Secure Configuration with exampleconfig_secret.json](#secure-configuration-with-exampleconfig_secretjson)
 3. [Proxy Configuration with proxy-binance.json](#proxy-configuration-with-proxy-binancejson)
-4. [Advanced Strategy Parameters in recommended_config.json](#advanced-strategy-parameters-in-recommended_configjson)
-5. [Custom Parameters and Position Management](#custom-parameters-and-position-management)
-6. [Debugging Complex Configurations](#debugging-complex-configurations)
-7. [Security and Risk Mitigation](#security-and-risk-mitigation)
+4. [Restrict Binance Futures Markets](#restrict-binance-futures-markets)
+5. [Advanced Strategy Parameters in recommended_config.json](#advanced-strategy-parameters-in-recommended_configjson)
+6. [Custom Parameters and Position Management](#custom-parameters-and-position-management)
+7. [Debugging Complex Configurations](#debugging-complex-configurations)
+8. [Security and Risk Mitigation](#security-and-risk-mitigation)
 
 ## Introduction
 This document provides a comprehensive guide to advanced configuration options for the NostalgiaForInfinityX8 trading strategy. It covers secure handling of sensitive data, network proxy configuration for restricted regions, and fine-grained control over trading behaviors through complex parameter structures. The documentation focuses on practical implementation details, security best practices, and real-world examples drawn directly from the codebase.
@@ -113,6 +114,28 @@ This approach leverages the underlying CCXT library's proxy support, allowing se
 
 **Section sources**
 - [proxy-binance.json](file://configs/proxy-binance.json#L1-L14)
+
+## Restrict Binance Futures Markets
+
+CCXT normally loads several Binance market types when it initializes the exchange. If a Binance futures setup only trades USDT-M contracts, a timeout from the unused COIN-M API (`dapi.binance.com`) can prevent startup even when the USDT-M API is reachable. Add the following options to the Binance `exchange` section in your user configuration to limit market loading to linear contracts:
+
+```json
+{
+  "exchange": {
+    "ccxt_config": {
+      "options": { "fetchMarkets": ["linear"] }
+    },
+    "ccxt_async_config": {
+      "options": { "fetchMarkets": ["linear"] }
+    }
+  }
+}
+```
+
+This setting is for Binance USDT-M futures only. Do not add it to the shared `trading_mode-futures.json`, because that file is also used with other exchanges. Merge these `options` into any existing CCXT configuration rather than replacing other settings.
+
+**Section sources**
+- [Binance futures market loading workaround](https://github.com/iterativv/NostalgiaForInfinity/issues/1596)
 
 ## Advanced Strategy Parameters in recommended_config.json
 
