@@ -78,6 +78,7 @@
     {
       "method": "StaticPairList"
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.contractType", "info_compare_value": "TRADIFI_PERPETUAL" },
     {
       "method": "FullTradesFilter"
     },

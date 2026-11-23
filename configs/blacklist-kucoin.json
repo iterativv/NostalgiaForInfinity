@@ -244,6 +244,8 @@
       "(AAPL|AMD|ARM|ASTS|CRWV|DELL|GOOGL|IREN|LITE|MRVL|MU|NBIS|QCOM|SNDK|SPCX|AAOI|AMZN|APLD|AVGO|BABA|BE|COHR|HOOD|INTC|IONQ|META|PLTR|SQQQ|TQQQ|TSLA|TSM)/.*",
       // kucoin xStocks tickers of the stocks above (iterativ, 2026-11-05 / 2026-11-06)
       "(INTC|AAPL|AMZN|HOOD|META|SPCX|TSLA)X/.*",
+      // KuCoin spot stock tokens (ON suffix, info.market == "Stocks")
+      "(AAPLON|AMZNON|ANTX|COINX|CRCLX|GOOGLON|METAON|MSFTON|MSTRX|MUON|NVDAON|NVDAX|QQQON|SPYON|TSLAON)/.*",
       // Commodities (tokenized energy/metal perps — crypto gold XAUT/PAXG kept above)
       "(CL|BZ|NATGAS|XPT)/.*",
       // Tokenized stocks (X-suffix)

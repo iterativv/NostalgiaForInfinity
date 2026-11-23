@@ -6,6 +6,8 @@
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
+    { "method": "DelistFilter" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.contractType", "info_compare_value": "TRADIFI_PERPETUAL" },
     { "method": "FullTradesFilter" },
     { "method": "AgeFilter", "min_days_listed": 60 },
     {
