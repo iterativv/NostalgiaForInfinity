@@ -5371,7 +5371,6 @@ class NostalgiaForInfinityX8(IStrategy):
     rsi_3_1d_lt_80 = rsi_3_1d < 80.0
     rsi_3_1d_lt_90 = rsi_3_1d < 90.0
     rsi_3_1d_lt_95 = rsi_3_1d < 95.0
-    rsi_14_gt_25 = rsi_14 > 25.0
     rsi_14_15m_lt_30 = rsi_14_15m < 30.0
     rsi_14_15m_lt_35 = rsi_14_15m < 35.0
     rsi_14_15m_lt_40 = rsi_14_15m < 40.0
@@ -6593,7 +6592,6 @@ class NostalgiaForInfinityX8(IStrategy):
     rsi_3_1d_lt_80 = rsi_3_1d < 80.0
     rsi_3_1d_lt_90 = rsi_3_1d < 90.0
     rsi_3_1d_lt_95 = rsi_3_1d < 95.0
-    rsi_14_gt_25 = rsi_14 > 25.0
     rsi_14_15m_lt_30 = rsi_14_15m < 30.0
     rsi_14_15m_lt_35 = rsi_14_15m < 35.0
     rsi_14_15m_lt_40 = rsi_14_15m < 40.0
@@ -6928,6 +6926,7 @@ class NostalgiaForInfinityX8(IStrategy):
     roc_9_15m_lt_20 = roc_9_15m < 20.0
     rsi_14_change_pct_gt_0 = rsi_14_change_pct > 0.0
     rsi_3_change_pct_1d_gt_neg_20 = rsi_3_change_pct_1d > -20.0
+    rsi_14_gt_25 = rsi_14 > 25.0
 
     is_backtest = self.dp.runmode.value in ["backtest", "hyperopt", "plot", "webserver"]
     # the number of free slots
@@ -15967,6 +15966,8 @@ class NostalgiaForInfinityX8(IStrategy):
           # Protections
           long_entry_logic.append(num_empty_288 <= allowed_empty_candles_288)
           long_entry_logic.append(protections_long_global == True)
+          long_entry_logic.append(rsi_14_gt_25)
+          long_entry_logic.append(rsi_14_1h_lt_40)
 
           long_entry_logic.append(
             (rsi_3_15m_gt_5)
@@ -16595,9 +16596,6 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((close > (high_max_20_1d * 0.20)) | aroonu_14_1h_lt_70 | (roc_9_1d_gt_neg_70))
             # drop in last 20 days, 1d high, 1d downtrend
             & ((close > (high_max_20_1d * 0.20)) | (stochrsi_k_1d_lt_70) | (roc_9_1d_gt_neg_15))
-            # 5m not deeply oversold, 1h oversold
-            & (rsi_14_gt_25)
-            & (rsi_14_1h_lt_40)
           )
 
           # Logic
