@@ -7,6 +7,7 @@ from types import SimpleNamespace
 import numpy as np
 import pandas as pd
 import pytest
+from freqtrade.enums import RunMode
 
 from NostalgiaForInfinityX8 import NostalgiaForInfinityX8
 
@@ -358,6 +359,32 @@ def test_btc_1h_is_read_only_inside_the_block():
   src = _src()
   assert src.count('np_view("BTC_RSI_14_1h")') == 1
   assert 'np_view("BTC_RSI_14_1h")' in _block()
+
+
+def _strategy(tmp_path, **config):
+  return NostalgiaForInfinityX8(
+    {
+      "exchange": {"name": "binance"},
+      "runmode": RunMode.BACKTEST,
+      "user_data_dir": tmp_path,
+      "stake_currency": "USDT",
+      **config,
+    }
+  )
+
+
+def test_btc_1h_is_loaded_only_while_signal_507_is_on(tmp_path):
+  # Then: signal 507 off loads only BTC 4h, as main; on adds BTC 1h.
+  params = NostalgiaForInfinityX8.short_entry_signal_params
+  saved = dict(params)
+  try:
+    assert _strategy(tmp_path).btc_info_timeframes == ["4h"]
+    on = _strategy(tmp_path, short_entry_signal_params={"short_entry_condition_507_enable": True})
+    assert on.btc_info_timeframes == ["1h", "4h"]
+    assert NostalgiaForInfinityX8.btc_info_timeframes == ["4h"]
+  finally:
+    params.clear()
+    params.update(saved)
 
 
 def test_every_clause_is_a_cached_boolean():
