@@ -37,3 +37,20 @@ services:
       --log-file user_data/logs/${FREQTRADE__BOT_NAME:-Example_Test_Account}-${FREQTRADE__EXCHANGE__NAME:-binance}-${FREQTRADE__STRATEGY:-NostalgiaForInfinityX8}-${FREQTRADE__TRADING_MODE:-futures}.log
       --strategy-path .
 #      -v
+
+  web:
+    profiles: ["web"]
+    build:
+      context: ./web
+    image: nfi-x9-web:local
+    container_name: nfi-x9-web
+    restart: unless-stopped
+    ports:
+      - "${WEB_PORT:-3000}:3000"
+    environment:
+      FREQTRADE_API_URL: ${FREQTRADE_API_URL:-http://freqtrade:8080}
+      FREQTRADE_USERNAME: ${FREQTRADE__API_SERVER__USERNAME:-}
+      FREQTRADE_PASSWORD: ${FREQTRADE__API_SERVER__PASSWORD:-}
+    depends_on:
+      freqtrade:
+        condition: service_healthy

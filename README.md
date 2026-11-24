@@ -11,6 +11,31 @@ Full documentation is available online at:
 
 Trading strategy for the [Freqtrade](https://www.freqtrade.io) crypto bot. For backtesting results, check out the comments in the individual [commit](https://github.com/iterativv/NostalgiaForInfinity/commits/main) page.
 
+## X9 and the Command Center
+
+`NostalgiaForInfinityX9.py` is the next strategy generation, derived from X8. It
+keeps the X8 entry/exit engine and upgrades the version contract to
+`v19.0.0`.
+
+The [`web/`](web/) directory contains a read-only command center for X9 and
+Freqtrade, built with Next.js 16, React 19, TypeScript, Tailwind CSS 4 and
+Recharts. It shows equity, open risk, pair attribution and recent activity
+without ever exposing API credentials to the browser.
+
+```bash
+cd web
+npm install
+npm run dev
+```
+
+Use `web/.env.example` to point the server-side proxy at a local Freqtrade REST
+API. With no API configured, the dashboard runs on a deterministic demo dataset.
+The optional `web` Compose profile starts it alongside the bot:
+
+```bash
+docker compose --profile web up -d --build
+```
+
 ## General Recommendations
 
 For optimal performance, suggested to use between 6 and 12 open trades, with unlimited stake.
