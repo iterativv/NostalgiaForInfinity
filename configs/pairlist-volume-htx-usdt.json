@@ -6,6 +6,8 @@
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.tags", "info_compare_value": "tradfi,stock" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.tags", "info_compare_value": "tradfi,indices,stock" },
     { "method": "FullTradesFilter" },
     { "method": "AgeFilter", "min_days_listed": 60 },
     {

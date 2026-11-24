@@ -6,6 +6,8 @@
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.instCategory", "info_compare_value": "3" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.instCategory", "info_compare_value": "4" },
     { "method": "FullTradesFilter" },
     { "method": "AgeFilter", "min_days_listed": 60 },
     {
