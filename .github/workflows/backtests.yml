@@ -5,6 +5,7 @@ on:
   push:
     paths:
       - 'NostalgiaForInfinityX8.py'
+      - 'NostalgiaForInfinityX9.py'
 
 jobs:
 
