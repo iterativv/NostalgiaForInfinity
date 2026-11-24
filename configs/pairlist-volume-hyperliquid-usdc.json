@@ -6,6 +6,12 @@
       "sort_key": "quoteVolume",
       "refresh_period": 1800
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "abcd" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "io" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "km" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "mkts" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "vntl" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "xyz" },
     { "method": "FullTradesFilter" },
     { "method": "AgeFilter", "min_days_listed": 60 },
     {

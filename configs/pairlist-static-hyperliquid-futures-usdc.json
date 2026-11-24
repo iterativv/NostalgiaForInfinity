@@ -78,6 +78,12 @@
     {
       "method": "StaticPairList"
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "abcd" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "io" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "km" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "mkts" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "vntl" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.dex", "info_compare_value": "xyz" },
     {
       "method": "FullTradesFilter"
     },

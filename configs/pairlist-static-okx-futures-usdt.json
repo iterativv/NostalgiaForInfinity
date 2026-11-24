@@ -174,6 +174,8 @@
     {
       "method": "StaticPairList"
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.instCategory", "info_compare_value": "3" },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.instCategory", "info_compare_value": "4" },
     { "method": "FullTradesFilter" },
     {
       "method": "SpreadFilter",

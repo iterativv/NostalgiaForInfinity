@@ -87,6 +87,7 @@
     {
       "method": "StaticPairList"
     },
+    { "method": "PairInformationFilter", "selection_mode": "blacklist", "info_key": "info.market", "info_compare_value": "Stocks" },
     { "method": "FullTradesFilter" },
     {
       "method": "SpreadFilter",
