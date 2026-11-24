@@ -90,7 +90,7 @@ class NostalgiaForInfinityX8(IStrategy):
   # BTC informatives
   # btc_info_timeframes = ["5m", "15m", "1h", "4h", "1d"]
   # btc_info_timeframes = ["1h", "4h", "1d"]
-  btc_info_timeframes = ["1h", "4h"]
+  btc_info_timeframes = ["4h"]
 
   stable_stake_currencies = frozenset(
     ("USDT", "BUSD", "USDC", "DAI", "TUSD", "FDUSD", "PAX", "USD", "EUR", "GBP", "TRY")
@@ -1332,6 +1332,10 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Parameter settings. Backward compatibility with the old configuration style.
     self.update_signals_from_config(strategy_config)
+
+    # BTC 1h is only required while signal 14 is on
+    if self.long_entry_signal_params["long_entry_condition_14_enable"]:
+      self.btc_info_timeframes = ["1h"] + self.btc_info_timeframes
 
   # Plot configuration for FreqUI
   # ---------------------------------------------------------------------------------------------
@@ -3415,9 +3419,11 @@ class NostalgiaForInfinityX8(IStrategy):
     phase_rows = -(-len(log_ret_28) // 28)
     phase_grid = np.full(phase_rows * 28, np.nan)
     phase_grid[: len(log_ret_28)] = log_ret_28
-    phase = pd.DataFrame(phase_grid.reshape(phase_rows, 28))
-    past_n = (phase.rolling(25, min_periods=1).count() - 1).to_numpy().ravel()[: len(log_ret_28)]
-    past_below = (phase.rolling(25, min_periods=1).rank(method="min") - 1).to_numpy().ravel()[: len(log_ret_28)]
+    phase = phase_grid.reshape(phase_rows, 28)
+    phase_win = np.lib.stride_tricks.sliding_window_view(np.vstack((np.full((24, 28), np.nan), phase)), 25, axis=0)
+    past_n = ((~np.isnan(phase_win)).sum(axis=2) - 1.0).ravel()[: len(log_ret_28)]
+    below = (phase_win < phase[:, :, None]).sum(axis=2)
+    past_below = np.where(np.isnan(phase), np.nan, below).ravel()[: len(log_ret_28)]
     mom_28_cold = np.where((past_n >= 12) & (past_below * 3 <= past_n), 1.0, 0.0)
     mom_28_cold = pd.Series(mom_28_cold).rolling(5, min_periods=1).max().to_numpy()
 
