@@ -29519,6 +29519,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((stochrsi_k_gt_80) | (rsi_3_15m_lt_75) | (rsi_3_4h_gt_10))
             # 5m still not low enough, 15m down move, 1h up move
             & ((stochrsi_k_lt_20) | (rsi_3_15m_gt_40) | (rsi_3_1h_lt_40))
+            # 5m & 1h still not low enough, 1h still high, 1d low
+            & ((stochrsi_k_lt_20) | (aroonu_14_1h_lt_25) | (stochrsi_k_1h_lt_50) | (stochrsi_k_1d_gt_40))
             # 15m oversold, 1h uptrend, 4h no new high
             & ((rsi_3_15m_gt_3) | (aroonu_14_1h_lt_20) | (aroonu_14_4h_gt_0))
             # 15m oversold, 1h uptrend, 4h down 10%+
