@@ -34438,6 +34438,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_30) | (stochrsi_k_1h_gt_20))
             # 5m & 1d uptrend, 15m still high
             & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_40) | (aroonu_14_1d_lt_40))
+            # 5m uptrend, 15m still high, 1h down move
+            & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_40) | (rsi_3_1h_gt_25))
             # 5m uptrend, 15m still high, 4h down move
             & ((aroonu_14_lt_25) | (stochrsi_k_15m_gt_40) | (rsi_3_4h_gt_20))
             # 5m uptrend, 15m still high, 1h high
@@ -34642,6 +34644,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((rsi_3_15m_gt_30) | (rsi_3_4h_lt_50) | (rsi_3_1d_gt_25))
             # 15m down move & still high, 1h up move, 1d uptrend
             & ((rsi_3_15m_gt_30) | (stochrsi_k_15m_gt_30) | (rsi_3_1h_lt_40) | (aroonu_14_1d_lt_30))
+            # 15m & 1d down move, 15m still high, 1h low
+            & ((rsi_3_15m_gt_30) | (stochrsi_k_15m_gt_30) | (stochrsi_k_1h_gt_20) | (rsi_3_1d_gt_15))
             # 15m down move, 1h high, 4h low
             & ((rsi_3_15m_gt_30) | (stochrsi_k_1h_gt_10) | (aroonu_14_4h_gt_20))
             # 15m & 4h down move, 1h uptrend
@@ -34724,6 +34728,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_15m_lt_20) | (aroonu_14_1h_lt_40) | (aroonu_14_1d_gt_10))
             # 15m & 1h uptrend, 1h low
             & ((aroonu_14_15m_lt_20) | (aroonu_14_1h_lt_40) | (stochrsi_k_1h_gt_20))
+            # 15m & 1h uptrend, 1h still high
+            & ((aroonu_14_15m_lt_20) | (aroonu_14_1h_lt_50) | (stochrsi_k_1h_gt_40))
             # 15m uptrend, 1h down move, 4h low
             & ((aroonu_14_15m_lt_20) | (rsi_3_1h_gt_10) | (aroonu_14_4h_gt_0))
             # 15m uptrend, 1h down move & low
@@ -35188,6 +35194,8 @@ class NostalgiaForInfinityX8(IStrategy):
             & ((aroonu_14_1h_lt_25) | (stochrsi_k_1h_gt_10) | (stochrsi_k_1d_gt_20))
             # 1h & 1d uptrend, 1h low
             & ((aroonu_14_1h_lt_25) | (stochrsi_k_1h_gt_20) | (aroonu_14_1d_lt_30))
+            # 1h uptrend, 1h & 4h still high, 1d high
+            & ((aroonu_14_1h_lt_25) | (stochrsi_k_1h_gt_30) | (stochrsi_k_4h_gt_40) | (stochrsi_k_1d_gt_10))
             # 1h & 1d uptrend
             & ((aroonu_14_1h_lt_30) | (aroonu_14_1d_lt_40))
             # 1h & 4h uptrend, 1d high
