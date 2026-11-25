@@ -191,6 +191,10 @@
       // Pump-and-dump (iterativ, 2026-11-22) — SkyAI, +31.4% on 2026-11-21 on a 51% range and a 26%
       // range the day before; ~$98M/day on the binance perp. Bybit lists it as SKYAI1.
       "(SKYAI|SKYAI1)/.*",
+      // Binance Monitoring Tag + Bybit perp delisting (iterativ, 2026-11-25) — tagged 2026-09-04;
+      // Bybit removes the TOWNSUSDT perp on 2026-11-27. TOWNS -41.8% over thirty days. Perps on
+      // binance, bybit and bitget; spot on binance.
+      "(TOWNS)/.*",
       // Stock perps not yet listed by name (Bitget isRwa: YES), found against a user's local
       // Bitget blacklist (iterativ, 2026-11-18).
       "(MSFT|MSTR|NVDA)/.*",
