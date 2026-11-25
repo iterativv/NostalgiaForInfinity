@@ -5747,8 +5747,10 @@ class NostalgiaForInfinityX8(IStrategy):
 
     # Global protections Short
     df["protections_short_global"] = (
+      # 15m & 1h down move, 4h & 1d low, 4h downtrend not confirmed
+      ((rsi_3_15m_gt_25) | (rsi_3_1h_gt_25) | (aroonu_14_4h_gt_0) | (aroonu_14_1d_gt_0) | (stochrsi_k_4h_lt_70))
       # 1h & 4h & 1d down move, 1h low, 4h oversold
-      ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25) | (stochrsi_k_1h_gt_10) | (roc_9_4h_gt_neg_15))
+      & ((rsi_3_1h_gt_10) | (rsi_3_4h_gt_25) | (rsi_3_1d_gt_25) | (stochrsi_k_1h_gt_10) | (roc_9_4h_gt_neg_15))
       # 1h & 4h & 1d down move, 4h low, 1d oversold
       & ((rsi_3_1h_gt_30) | (rsi_3_4h_gt_30) | (rsi_3_1d_gt_35) | (stochrsi_k_4h_gt_20) | (roc_9_1d_gt_neg_30))
       # 1h & 4h up move, 1d low, 1d oversold
