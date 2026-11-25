@@ -749,6 +749,10 @@ class NostalgiaForInfinityX8(IStrategy):
   bad_trade_controller_stale_min_age_days = 100.0
   bad_trade_controller_stale_max_daily_range_pct = 7.0
   bad_trade_controller_stale_min_adverse_move_pct = 10.0
+  # Optional full exit on a whole-trade loss measured against the first entry stake.
+  stake_abandon_enable = False
+  stake_abandon_loss_ratio_spot = 0.35
+  stake_abandon_loss_ratio_futures = 1.0
   # De-risk hold. A position that reaches a de-risk level while its own daily trend is still intact
   # is usually an overshoot that comes back; one that reaches it during a real daily breakdown is
   # not. Measured on the seven-year gms0 baseline with the ladder's real fires: the one fire the
@@ -1218,6 +1222,9 @@ class NostalgiaForInfinityX8(IStrategy):
       "bad_trade_controller_structure_break_ema_gap_pct",
       "bad_trade_controller_structure_break_min_adverse_move_pct",
       "bad_trade_controller_stale_exit_enable",
+      "stake_abandon_enable",
+      "stake_abandon_loss_ratio_spot",
+      "stake_abandon_loss_ratio_futures",
       "bad_trade_controller_stale_min_age_days",
       "bad_trade_controller_stale_max_daily_range_pct",
       "bad_trade_controller_stale_min_adverse_move_pct",
@@ -2037,6 +2044,29 @@ class NostalgiaForInfinityX8(IStrategy):
     )
 
     system_version = trade.get_custom_data(key="system_version")
+    if self.stake_abandon_enable and self.derisk_enable and profit_stake < 0.0:
+      # Convert the first-entry notional ratio to a margin ratio in futures.
+      if self.is_futures_mode:
+        stake_loss_ratio = -profit_init_ratio * trade.leverage
+        stake_loss_limit = self.stake_abandon_loss_ratio_futures
+      else:
+        stake_loss_ratio = -profit_init_ratio
+        stake_loss_limit = self.stake_abandon_loss_ratio_spot
+
+      rebuy_tags = short_rebuy_mode_tags if trade_is_short else long_rebuy_mode_tags
+      rebuy_grind_tags = self.short_rebuy_grind_mode_tags if trade_is_short else long_rebuy_grind_mode_tags
+      if any(tag in rebuy_tags for tag in enter_tags) and all(tag in rebuy_grind_tags for tag in enter_tags):
+        # Rebuy starts with a fraction of a normal stake; use the same stake basis as grind.
+        if system_version == self.system_v4_name:
+          stake_loss_ratio *= self.system_v4_rebuy_mode_stake_multiplier
+        elif system_version in (self.system_v3_name, self.system_v3_1_name, self.system_v3_2_name):
+          stake_loss_ratio *= self.system_v3_rebuy_mode_stake_multiplier
+        else:
+          stake_loss_ratio *= self.rebuy_mode_stake_multiplier
+
+      if stake_loss_ratio >= stake_loss_limit:
+        return f"exit_abandon_stake ( {enter_tag})"
+
     bad_trade_exit_enable = (
       self.system_v4_bad_trade_exit_enable
       if system_version == self.system_v4_name
