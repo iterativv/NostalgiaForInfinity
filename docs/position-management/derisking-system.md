@@ -116,6 +116,23 @@ The system uses different derisking parameters for various trading modes:
 
 These parameters are defined in the strategy class (L206-L488) and can be overridden in the configuration file, allowing for fine-tuning based on market conditions and risk preferences.
 
+### Stake-based abandon exit (X8)
+
+With de-risking enabled, set `nfi_parameters.stake_abandon_enable` to `true` to request a full exit once
+the whole trade's loss reaches its stake limit. The option defaults to `false` and does not require a
+de-risk fill before it can fire.
+
+The loss includes realized P&L from partial exits and the estimated P&L on the remaining position,
+including fees and futures funding. The limit is a fraction of the first filled entry's stake
+(margin, not notional, for futures). In rebuy mode, the first stake is divided by the trade's system
+rebuy multiplier so the smaller opening order does not lower the loss budget.
+
+Set `stake_abandon_loss_ratio_spot` (default `0.35`) or `stake_abandon_loss_ratio_futures` (default
+`1.0`) in `nfi_parameters` to override the limit. These are positive fractions: `0.35` means 35%.
+The exit reason starts with `exit_abandon_stake`. Usual exit confirmation still applies, including
+configured trade holds and `exit_profit_only`. The threshold triggers an exit request, not a
+guaranteed fill price or maximum loss.
+
 **Section sources**
 - [NostalgiaForInfinityX8.py](file://NostalgiaForInfinityX8.py#L206-L362)
 

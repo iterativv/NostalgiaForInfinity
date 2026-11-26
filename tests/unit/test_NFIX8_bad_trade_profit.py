@@ -348,3 +348,74 @@ def test_inclusive_exit_keeps_confirmation_profit_veto(profit_case, tmp_path):
 
   # When / Then: a new eligibility route is not permission to bypass confirmation.
   assert not strategy.confirm_trade_exit(trade.pair, trade, "limit", trade.amount, rate, "gtc", reason, NOW)
+
+
+@pytest.mark.parametrize("scenario", ["default_off", "derisk_off", "above_limit", "at_limit", "custom_limit"])
+def test_stake_abandon_uses_whole_trade_loss_and_first_entry_stake(
+  profit_case: tuple[NostalgiaForInfinityX8, Trade], tmp_path, scenario: str
+) -> None:
+  fixture_strategy, trade = profit_case
+  futures = fixture_strategy.is_futures_mode
+  parameters = {"derisk_enable": scenario != "derisk_off", "system_v4_bad_trade_exit_enable": False}
+  if scenario != "default_off":
+    parameters["stake_abandon_enable"] = True
+  if scenario == "custom_limit":
+    parameters["stake_abandon_loss_ratio_futures"] = 0.90
+    parameters["stake_abandon_loss_ratio_spot"] = 0.30
+  strategy = NostalgiaForInfinityX8(
+    fixture_strategy.config
+    | {
+      "user_data_dir": tmp_path,
+      "trading_mode": trade.trading_mode.value,
+      "nfi_parameters": parameters,
+    }
+  )
+  strategy.dp = fixture_strategy.dp
+  strategy.long_exit_quick = fixture_strategy.long_exit_quick
+  strategy.short_exit_quick = fixture_strategy.short_exit_quick
+
+  fill(trade, True, 10.0, 96.0)
+  fill(trade, True, 4.0, 112.0 if trade.is_short else 80.0)
+  fill(trade, False, 8.0, 126.0 if trade.is_short else (66.0 if futures else 64.0))
+  # At 72 (long) or 120 (short), total P&L is -336 spot or -320 futures.
+  # The six remaining units have lost less than the whole-trade limit.
+  rate = 120.0 if trade.is_short else 72.0
+  if scenario in ("above_limit", "custom_limit"):
+    rate += -1.0 if trade.is_short else 1.0
+  elif scenario in ("default_off", "derisk_off"):
+    rate += 1.0 if trade.is_short else -1.0
+
+  reason = custom_exit((strategy, trade), rate)
+
+  if scenario in ("at_limit", "custom_limit"):
+    assert reason == f"exit_abandon_stake ( {trade.enter_tag})"
+    assert strategy.confirm_trade_exit(trade.pair, trade, "limit", trade.amount, rate, "gtc", reason, NOW)
+  else:
+    assert reason is None
+
+
+@pytest.mark.parametrize("system", ["system_v4", "system_v3_2", None])
+@pytest.mark.parametrize("reaches_limit", [False, True])
+def test_stake_abandon_normalizes_smaller_rebuy_entry(
+  profit_case: tuple[NostalgiaForInfinityX8, Trade], system: str | None, reaches_limit: bool
+) -> None:
+  strategy, trade = profit_case
+  strategy.stake_abandon_enable = True
+  strategy.system_v4_bad_trade_exit_enable = False
+  strategy.long_exit_rebuy = MagicMock(return_value=(False, None))
+  strategy.short_exit_rebuy = MagicMock(return_value=(False, None))
+  trade.set_custom_data("system_version", system)
+  trade.enter_tag = "561" if trade.is_short else "61 120"
+  fill(trade, True, 10.0, 96.0)
+  fill(trade, True, 40.0, 96.0)
+  # Price moves are on either side of the normalized loss limit. Both sides exceed
+  # the unadjusted first-entry stake limit.
+  if strategy.is_futures_mode:
+    adverse_move = (19.0 if reaches_limit else 18.0) if system is None else (26.0 if reaches_limit else 25.0)
+  else:
+    adverse_move = (20.0 if reaches_limit else 19.0) if system is None else (27.0 if reaches_limit else 26.0)
+  rate = 96.0 + adverse_move if trade.is_short else 96.0 - adverse_move
+
+  reason = custom_exit(profit_case, rate)
+
+  assert reason == (f"exit_abandon_stake ( {trade.enter_tag})" if reaches_limit else None)
