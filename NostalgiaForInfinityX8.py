@@ -5780,6 +5780,8 @@ class NostalgiaForInfinityX8(IStrategy):
       & ((rsi_3_1d_gt_20) | (stochrsi_k_15m_lt_90) | (roc_9_4h_gt_neg_40))
       # 1d down move, 4h high, 1d downtrend
       & ((rsi_3_1d_gt_30) | (roc_9_4h_lt_150) | (roc_9_4h_gt_neg_40))
+      # 15m high, 4h high, 4h & 1d overbought
+      & ((aroonu_14_15m_lt_100) | (stochrsi_k_15m_lt_90) | (stochrsi_k_4h_lt_70) | (roc_9_4h_lt_20) | (roc_9_1d_lt_50))
     )
 
     df["global_protections_long_pump"] = True
