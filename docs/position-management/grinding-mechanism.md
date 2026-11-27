@@ -253,7 +253,7 @@ The derisking system is particularly important for preventing catastrophic losse
 | `oldest` | Only the oldest remaining entry: the last item in the newest-first list. |
 | `keep_latest` | All entries except the newest: keep the first list item and sell the older items. If only one entry remains, sell that one. |
 
-All three modes use the configured raw price change against the weighted average of **all remaining entries in the queue**, including the entry kept by `keep_latest`. They do not use leveraged PnL or the average of only the entries selected for sale. Chronological list membership determines selection, not a price sort or a search for another eligible entry. Ordinary profit exits still address the remaining group together.
+All three modes use the configured raw price change against the weighted average of **all remaining entries in the queue**, including the entry kept by `keep_latest`. They do not use leveraged PnL or the average of only the entries selected for sale. Chronological list membership determines selection, not a price sort or a search for another eligible entry. Ordinary profit exits are selected separately by `system_v4_grind_exit_mode`.
 
 The default requires no new configuration and does not opt existing trades into a different selection mode. To explicitly select an alternative, use the existing advanced parameter mechanism:
 
@@ -267,6 +267,15 @@ The default requires no new configuration and does not opt existing trades into 
 ```
 
 The applied value must be exactly `all`, `oldest`, or `keep_latest`; invalid applied values fail at startup. Without advanced mode, the existing unsafe-parameter warning and ignore behavior applies. Thresholds, stakes, spacing, entry priority, base-asset fee handling, exchange precision and native minimum/reserve/leverage guards remain unchanged. A blocked selected subset is not enlarged with an excluded entry to meet the minimum.
+
+`system_v4_grind_exit_mode` controls the ordinary profit exit (`grind_N_exit`) of the same five queues:
+
+| Value | Profit check and entries sold |
+| --- | --- |
+| `all` (default) | The weighted average of all remaining entries must reach the queue's profit threshold plus fees; all remaining entries are sold together. |
+| `latest` | The newest remaining entry (the first list item) must reach the same threshold from its own fill price; only that entry is sold. The next callback checks the next newest entry the same way. A single remaining entry is handled exactly as in `all`. |
+
+`latest` still requires the existing exit-candle conditions, reserve and minimum checks, and spot base-fee handling for the selected entry. It does not skip a losing newest entry to sell an older profitable one. It is configured like the de-risk mode, for example `"system_v4_grind_exit_mode": "latest"` inside `nfi_parameters` with `nfi_advanced_mode` enabled. The applied value must be exactly `all` or `latest`; invalid applied values fail at startup. Both modes can be combined, for example `oldest` de-risk with `latest` profit exits.
 
 Tag membership is not a claim that an order has fully filled. Actual `Trade` and `Order` balances retain any pending physical quantity; the managed partial-exit recovery described above retries the actual remainder first with the complete same tag, without requiring the profit trigger again. No new tag family, additional history replay or persisted per-entry quantity ledger is used. Short, older stored-system and legacy `120`/`121` routes are unchanged.
 
