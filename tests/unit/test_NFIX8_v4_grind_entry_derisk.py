@@ -371,7 +371,8 @@ def test_fully_filled_native_tag_omits_only_its_named_id(entry_derisk_bot, v4_ca
 
 
 @pytest.mark.parametrize("v4_case", [(True, 4.0)], indirect=True, ids=["futures-short"])
-def test_original_short_route_keeps_aggregate_derisk(entry_derisk_bot, v4_case, level):
+@pytest.mark.parametrize("derisk_config", [{}])
+def test_default_short_route_keeps_aggregate_derisk(entry_derisk_bot, v4_case, level):
   bot, clock = entry_derisk_bot
   _, trade, _ = v4_case
   oldest_id = trade.orders[-1].id
