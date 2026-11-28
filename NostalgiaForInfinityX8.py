@@ -737,8 +737,6 @@ class NostalgiaForInfinityX8(IStrategy):
   system_v4_grind_entry_before_derisk_distance = 0.02  # unleveraged price move from the grind average
   system_v4_grind_derisk_mode = "all"
   system_v4_grind_exit_mode = "all"
-  system_v4_short_grind_derisk_mode = "all"
-  system_v4_short_grind_exit_mode = "all"
 
   # Bad-trade exits. Enable for new v4 trades without changing older open trades.
   system_v4_bad_trade_exit_enable = True
@@ -1300,12 +1298,6 @@ class NostalgiaForInfinityX8(IStrategy):
 
     if not isinstance(self.system_v4_grind_exit_mode, str) or self.system_v4_grind_exit_mode not in ("all", "latest"):
       raise ValueError("system_v4_grind_exit_mode must be all or latest.")
-
-    if self.system_v4_short_grind_derisk_mode not in ("all", "oldest", "keep_latest"):
-      raise ValueError("system_v4_short_grind_derisk_mode must be all, oldest, or keep_latest.")
-
-    if self.system_v4_short_grind_exit_mode not in ("all", "latest"):
-      raise ValueError("system_v4_short_grind_exit_mode must be all or latest.")
 
     if self.target_profit_cache is None:
       bot_name = ""
@@ -61366,8 +61358,8 @@ class NostalgiaForInfinityX8(IStrategy):
         )
         return -ft_sell_amount, "derisk_level_3"
 
-    exit_latest_grind = has_order_tags and self.system_v4_short_grind_exit_mode == "latest"
-    short_grind_derisk_mode = self.system_v4_short_grind_derisk_mode if has_order_tags else "all"
+    exit_latest_grind = has_order_tags and self.system_v4_grind_exit_mode == "latest"
+    short_grind_derisk_mode = self.system_v4_grind_derisk_mode if has_order_tags else "all"
 
     def short_grind_profit_exit(
       tag: str,

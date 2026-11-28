@@ -14,8 +14,8 @@ entry_derisk_bot = entry.entry_derisk_bot
 no_callback_errors = entry.no_callback_errors
 SHORT = [(True, 4.0)]
 SHORT_LEVERAGES = [(True, 2.0), (True, 4.0)]
-EXIT_MODE = "system_v4_short_grind_exit_mode"
-DERISK_MODE = "system_v4_short_grind_derisk_mode"
+EXIT_MODE = "system_v4_grind_exit_mode"
+DERISK_MODE = "system_v4_grind_derisk_mode"
 
 
 def advanced(key, value):
@@ -100,19 +100,16 @@ def test_latest_exits_newest_entries_one_at_a_time_from_their_own_short_price(en
 @pytest.mark.parametrize("v4_case", SHORT, indirect=True, ids=["futures-short"])
 @pytest.mark.parametrize(
   "derisk_config",
-  [
-    {"nfi_advanced_mode": True, "nfi_parameters": {"system_v4_grind_exit_mode": "latest"}},
-    {"nfi_parameters": {EXIT_MODE: "latest"}},
-  ],
+  [{}, {"nfi_parameters": {EXIT_MODE: "latest"}}],
   indirect=True,
-  ids=["long-only-latest", "unsafe-short-latest"],
+  ids=["default", "unsafe-latest"],
 )
-def test_long_or_unsafe_latest_keeps_short_aggregate_exit(entry_derisk_bot, v4_case, derisk_config, caplog):
+def test_default_or_unsafe_latest_keeps_short_aggregate_exit(entry_derisk_bot, v4_case, derisk_config, caplog):
   bot, clock = entry_derisk_bot
   _, trade, _ = v4_case
   entry_ids, _ = four_entry_queue(trade, 1)
   originals = entry.entry_records(trade)
-  if derisk_config.get("nfi_advanced_mode") is not True:
+  if "nfi_parameters" in derisk_config:
     assert any(
       f"Invalid or unsafe parameter: {EXIT_MODE}." in record.getMessage() for record in caplog.get_records("setup")
     )
